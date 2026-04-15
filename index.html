@@ -528,7 +528,7 @@ async function toggleAktTag(prosjektId, aktIdx, tagId) {
   const akt = aktiviteter[aktIdx];
   if (!akt) return;
   // Støtte både gammelt format (streng) og nytt (objekt)
-  const obj = typeof akt === 'string' ? { tekst: akt, tags: [] } : { ...akt };
+  const obj = typeof akt === 'string' ? { tekst: akt, tags: [], kommentarer: [] } : { ...akt };
   const tags = obj.tags || [];
   obj.tags = tags.includes(tagId) ? tags.filter(t => t !== tagId) : [...tags, tagId];
   aktiviteter[aktIdx] = obj;
@@ -689,7 +689,7 @@ async function saveStepEdit(id, i) {
   const p=projects.find(p=>p.id===id); if(!p) return;
   const aktiviteter = [...(p.steg||[])];
   const akt = aktiviteter[i];
-  aktiviteter[i] = typeof akt === 'string' ? { tekst: val, tags: [] } : { ...akt, tekst: val };
+  aktiviteter[i] = typeof akt === 'string' ? { tekst: val, tags: [], kommentarer: [] } : { ...akt, tekst: val };
   try { await dbPatch(id,{steg: aktiviteter}); openCards.add(id); await loadAndRender(); }
   catch(e){ alert('Feil: '+e.message); }
 }
@@ -793,34 +793,6 @@ function buildCard(p) {
         </li>`;
       }).join('')}
     </ul>` : '';
-
-  // ── Kommentarer ──
-  const kommentarSection = `
-    <div class="card-section">
-      <span class="card-section-title">Kommentarer (${kommentarer.length})</span>
-      ${kommentarer.length ? `<div class="kommentar-list">
-        ${kommentarer.map(k => `
-          <div class="kommentar-item">
-            <div class="kommentar-meta">
-              <span class="kommentar-navn">${esc(k.navn)}</span>
-              <span style="display:flex;align-items:center;gap:8px">
-                <span class="kommentar-tid">${formatTid(k.tid)}</span>
-                <button class="kommentar-del-btn" onclick="deleteKommentar(${p.id},${k.id})" title="Slett">✕</button>
-              </span>
-            </div>
-            <div class="kommentar-tekst">${esc(k.tekst)}</div>
-          </div>`).join('')}
-      </div>` : ''}
-      <div class="kommentar-form">
-        <input class="kommentar-navn-inp" type="text" id="k-navn-${p.id}" placeholder="Ditt navn (valgfritt)…" />
-        <textarea class="kommentar-tekst-inp" id="k-tekst-${p.id}" placeholder="Skriv en kommentar…"
-          onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))addKommentar(${p.id})"></textarea>
-        <div>
-          <button class="btn-small" onclick="addKommentar(${p.id})">Legg til kommentar</button>
-          <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-left:10px;">Ctrl+Enter</span>
-        </div>
-      </div>
-    </div>`;
 
   // ── Filer ──
   const filerSection = `
