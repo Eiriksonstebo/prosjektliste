@@ -108,14 +108,7 @@
   .tag-klar     { background: rgba(56,189,248,0.12); color: var(--tag-klar);     border: 1px solid rgba(56,189,248,0.3); }
   .tag-stroket  { background: rgba(248,113,113,0.12); color: var(--tag-stroket); border: 1px solid rgba(248,113,113,0.3); }
 
-  .tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
-  .tag-select-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
-  .tag-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 0.65rem; padding: 4px 10px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.06em; text-transform: uppercase; }
-  .tag-btn:hover { border-color: var(--text); color: var(--text); }
-  .tag-btn.active-avhengig { background: rgba(167,139,250,0.15); color: var(--tag-avhengig); border-color: rgba(167,139,250,0.5); }
-  .tag-btn.active-ferdig   { background: rgba(74,222,128,0.12);  color: var(--tag-ferdig);   border-color: rgba(74,222,128,0.4); }
-  .tag-btn.active-klar     { background: rgba(56,189,248,0.12);  color: var(--tag-klar);     border-color: rgba(56,189,248,0.4); }
-  .tag-btn.active-stroket  { background: rgba(248,113,113,0.12); color: var(--tag-stroket);  border-color: rgba(248,113,113,0.4); }
+
 
   /* ── SECTIONS INSIDE CARD ── */
   .card-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
@@ -139,16 +132,26 @@
   .detail-item label { display: block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
   .detail-item p { font-size: 0.9rem; }
 
-  /* ── STEPS ── */
-  .steps-list { list-style: none; counter-reset: step; }
-  .steps-list li { counter-increment: step; display: grid; grid-template-columns: auto 1fr auto auto auto; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: center; }
-  .steps-list li:last-child { border-bottom: none; }
-  .steps-list li::before { content: counter(step, decimal-leading-zero); font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(212,240,0,0.08); border: 1px solid rgba(212,240,0,0.2); border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
-  .step-text { font-size: 0.9rem; }
-  .step-edit-inp { display: none; background: var(--surface2); border: 1px solid var(--accent); border-radius: 6px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.88rem; padding: 5px 9px; outline: none; width: 100%; }
-  .step-edit-inp.on { display: block; }
-  .step-text.off { display: none; }
-  .step-btn { background: transparent; border: none; cursor: pointer; font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; color: var(--muted); transition: all 0.12s; line-height: 1; }
+  /* ── AKTIVITETER ── */
+  .akt-list { list-style: none; counter-reset: akt; }
+  .akt-list li { counter-increment: akt; display: grid; grid-template-columns: auto 1fr auto auto auto; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .akt-list li:last-child { border-bottom: none; }
+  .akt-list li::before { content: counter(akt, decimal-leading-zero); font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(212,240,0,0.08); border: 1px solid rgba(212,240,0,0.2); border-radius: 4px; padding: 2px 6px; white-space: nowrap; margin-top: 2px; }
+  .akt-body { min-width: 0; }
+  .akt-tekst { font-size: 0.9rem; line-height: 1.4; }
+  .akt-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+  .akt-tag-btns { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .akt-tag-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 3px 8px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.06em; text-transform: uppercase; }
+  .akt-tag-btn:hover { border-color: var(--text); color: var(--text); }
+  .akt-tag-btn.active-avhengig { background: rgba(167,139,250,0.15); color: var(--tag-avhengig); border-color: rgba(167,139,250,0.5); }
+  .akt-tag-btn.active-ferdig   { background: rgba(74,222,128,0.12);  color: var(--tag-ferdig);   border-color: rgba(74,222,128,0.4); }
+  .akt-tag-btn.active-klar     { background: rgba(56,189,248,0.12);  color: var(--tag-klar);     border-color: rgba(56,189,248,0.4); }
+  .akt-tag-btn.active-stroket  { background: rgba(248,113,113,0.12); color: var(--tag-stroket);  border-color: rgba(248,113,113,0.4); }
+  .akt-edit-inp { display: none; background: var(--surface2); border: 1px solid var(--accent); border-radius: 6px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.88rem; padding: 5px 9px; outline: none; width: 100%; margin-bottom: 4px; }
+  .akt-edit-inp.on { display: block; }
+  .akt-tekst.off { display: none; }
+  .akt-tags.off { display: none; }
+  .step-btn { background: transparent; border: none; cursor: pointer; font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; color: var(--muted); transition: all 0.12s; line-height: 1; margin-top: 1px; }
   .step-btn:hover { background: var(--surface3); }
   .step-btn.eb:hover { color: var(--accent); }
   .step-btn.db:hover { color: #ff4444; }
@@ -274,7 +277,7 @@
       <input type="text" id="inp-frist" placeholder="Frist (f.eks. Q2 2025)…" />
     </div>
     <textarea id="inp-beskrivelse" placeholder="Kort beskrivelse av prosjektet…"></textarea>
-    <input type="text" id="inp-steg1" placeholder="Første steg / instruksjon (valgfritt)…" />
+    <input type="text" id="inp-steg1" placeholder="Første aktivitet (valgfritt)…" />
   </div>
 </div>
 
@@ -510,7 +513,7 @@ async function deleteFil(prosjektId, filId) {
 }
 
 // ════════════════════════════════════════════════════════════
-// TAGS
+// TAGS — tilknyttet hver enkelt aktivitet
 // ════════════════════════════════════════════════════════════
 const TAG_DEF = [
   { id: 'avhengig', label: 'Avhengig av tidligere aktivitet' },
@@ -519,11 +522,17 @@ const TAG_DEF = [
   { id: 'stroket',  label: 'Strøket' },
 ];
 
-async function toggleTag(prosjektId, tagId) {
+async function toggleAktTag(prosjektId, aktIdx, tagId) {
   const p = projects.find(p => p.id === prosjektId); if (!p) return;
-  const tags = p.tags || [];
-  const nyeTags = tags.includes(tagId) ? tags.filter(t => t !== tagId) : [...tags, tagId];
-  try { await dbPatch(prosjektId, {tags: nyeTags}); openCards.add(prosjektId); await loadAndRender(); }
+  const aktiviteter = [...(p.steg || [])];
+  const akt = aktiviteter[aktIdx];
+  if (!akt) return;
+  // Støtte både gammelt format (streng) og nytt (objekt)
+  const obj = typeof akt === 'string' ? { tekst: akt, tags: [] } : { ...akt };
+  const tags = obj.tags || [];
+  obj.tags = tags.includes(tagId) ? tags.filter(t => t !== tagId) : [...tags, tagId];
+  aktiviteter[aktIdx] = obj;
+  try { await dbPatch(prosjektId, { steg: aktiviteter }); openCards.add(prosjektId); await loadAndRender(); }
   catch(e) { alert('Feil: ' + e.message); }
 }
 
@@ -584,7 +593,7 @@ async function addProject() {
   if (!navn) { document.getElementById('inp-navn').focus(); return; }
   const b = document.getElementById('add-btn');
   b.disabled = true; b.textContent = '…';
-  const steg = []; const s1 = document.getElementById('inp-steg1').value.trim(); if (s1) steg.push(s1);
+  const steg = []; const s1 = document.getElementById('inp-steg1').value.trim(); if (s1) steg.push({ tekst: s1, tags: [] });
   try {
     await dbCreate({ navn, storrelse: document.getElementById('inp-storrelse').value, status: 'ikke-startet',
       ansvarlig: document.getElementById('inp-ansvarlig').value.trim()||null,
@@ -641,7 +650,8 @@ async function addStep(id) {
   const inp = document.getElementById('si-'+id);
   const val = inp.value.trim(); if (!val) return;
   const p = projects.find(p => p.id === id); if (!p) return;
-  try { await dbPatch(id, {steg: [...(p.steg||[]), val]}); inp.value=''; openCards.add(id); await loadAndRender(); }
+  const nyAkt = { tekst: val, tags: [] };
+  try { await dbPatch(id, {steg: [...(p.steg||[]), nyAkt]}); inp.value=''; openCards.add(id); await loadAndRender(); }
   catch(e) { alert('Feil: ' + e.message); }
 }
 
@@ -654,15 +664,22 @@ async function deleteStep(id, i) {
 function toggleStepEdit(id, i) {
   const t=document.getElementById(`st-${id}-${i}`), inp=document.getElementById(`se-${id}-${i}`), sb=document.getElementById(`ss-${id}-${i}`);
   const on=inp.classList.contains('on');
-  if(on){t.classList.remove('off');inp.classList.remove('on');sb.classList.remove('on');}
-  else{inp.value=t.textContent;t.classList.add('off');inp.classList.add('on');sb.classList.add('on');inp.focus();}
+  if(on){ t.classList.remove('off'); inp.classList.remove('on'); sb.classList.remove('on'); }
+  else {
+    const p = projects.find(p=>p.id===id);
+    const akt = p && p.steg && p.steg[i];
+    inp.value = akt ? (typeof akt === 'string' ? akt : akt.tekst) : '';
+    t.classList.add('off'); inp.classList.add('on'); sb.classList.add('on'); inp.focus();
+  }
 }
 
 async function saveStepEdit(id, i) {
   const inp=document.getElementById(`se-${id}-${i}`); const val=inp.value.trim(); if(!val) return;
   const p=projects.find(p=>p.id===id); if(!p) return;
-  const s=[...p.steg]; s[i]=val;
-  try { await dbPatch(id,{steg:s}); openCards.add(id); await loadAndRender(); }
+  const aktiviteter = [...(p.steg||[])];
+  const akt = aktiviteter[i];
+  aktiviteter[i] = typeof akt === 'string' ? { tekst: val, tags: [] } : { ...akt, tekst: val };
+  try { await dbPatch(id,{steg: aktiviteter}); openCards.add(id); await loadAndRender(); }
   catch(e){ alert('Feil: '+e.message); }
 }
 
@@ -698,39 +715,44 @@ function buildCard(p) {
   const open    = openCards.has(p.id);
   const editing = editingCards.has(p.id);
   const dot     = p.status==='pagaar' ? 'var(--accent)' : p.status==='fullfort' ? '#4caf50' : 'var(--muted)';
-  const tags    = p.tags || [];
+  const aktiviteter = p.steg || [];
   const kommentarer = p.kommentarer || [];
-  const filer   = p.filer || [];
+  const filer       = p.filer || [];
 
-  // Tags i korthodet
-  const tagsInHeader = tags.length ? tags.map(t => {
+  // Samle unike tags på tvers av alle aktiviteter — vises i korthodet
+  const alleTags = [...new Set(aktiviteter.flatMap(a => typeof a === 'string' ? [] : (a.tags||[])))];
+  const tagsInHeader = alleTags.map(t => {
     const def = TAG_DEF.find(d => d.id === t);
     return def ? `<span class="tag tag-${t}">${def.label}</span>` : '';
-  }).join('') : '';
+  }).join('');
 
-  // ── Tag-velger ──
-  const tagSection = `
-    <div class="card-section">
-      <span class="card-section-title">Status-tags</span>
-      <div class="tags-row">
-        ${TAG_DEF.map(t => `
-          <button class="tag-btn ${tags.includes(t.id) ? 'active-'+t.id : ''}"
-            onclick="toggleTag(${p.id},'${t.id}')">
-            ${t.label}
-          </button>`).join('')}
-      </div>
-    </div>`;
-
-  // ── Steg ──
-  const stegHTML = p.steg && p.steg.length ? `
-    <ul class="steps-list">
-      ${p.steg.map((s,i) => `<li>
-        <span class="step-text" id="st-${p.id}-${i}">${esc(s)}</span>
-        <input class="step-edit-inp" id="se-${p.id}-${i}" onkeydown="if(event.key==='Enter')saveStepEdit(${p.id},${i});if(event.key==='Escape')toggleStepEdit(${p.id},${i})" />
-        <button class="step-btn sb" id="ss-${p.id}-${i}" onclick="saveStepEdit(${p.id},${i})">✓</button>
-        <button class="step-btn eb" onclick="toggleStepEdit(${p.id},${i})">✎</button>
-        <button class="step-btn db" onclick="deleteStep(${p.id},${i})">✕</button>
-      </li>`).join('')}
+  // ── Aktivitetsliste med tags per rad ──
+  const aktivitetHTML = aktiviteter.length ? `
+    <ul class="akt-list">
+      ${aktiviteter.map((a, i) => {
+        const tekst = typeof a === 'string' ? a : (a.tekst || '');
+        const aktTags = typeof a === 'string' ? [] : (a.tags || []);
+        return `<li>
+          <div class="akt-body">
+            <div class="akt-tekst" id="st-${p.id}-${i}">${esc(tekst)}</div>
+            <input class="akt-edit-inp" id="se-${p.id}-${i}"
+              onkeydown="if(event.key==='Enter')saveStepEdit(${p.id},${i});if(event.key==='Escape')toggleStepEdit(${p.id},${i})" />
+            ${aktTags.length ? `<div class="akt-tags" id="at-${p.id}-${i}">
+              ${aktTags.map(t => { const d=TAG_DEF.find(d=>d.id===t); return d?`<span class="tag tag-${t}">${d.label}</span>`:''; }).join('')}
+            </div>` : `<div class="akt-tags" id="at-${p.id}-${i}"></div>`}
+            <div class="akt-tag-btns">
+              ${TAG_DEF.map(t => `
+                <button class="akt-tag-btn ${aktTags.includes(t.id)?'active-'+t.id:''}"
+                  onclick="toggleAktTag(${p.id},${i},'${t.id}')">
+                  ${t.label}
+                </button>`).join('')}
+            </div>
+          </div>
+          <button class="step-btn sb" id="ss-${p.id}-${i}" onclick="saveStepEdit(${p.id},${i})">✓</button>
+          <button class="step-btn eb" onclick="toggleStepEdit(${p.id},${i})">✎</button>
+          <button class="step-btn db" onclick="deleteStep(${p.id},${i})">✕</button>
+        </li>`;
+      }).join('')}
     </ul>` : '';
 
   // ── Kommentarer ──
@@ -838,7 +860,7 @@ function buildCard(p) {
             ${esc(p.navn)}
           </div>
           <div class="card-subtitle">
-            ${(p.steg&&p.steg.length)?`<span>${p.steg.length} steg</span>`:''}
+            ${(aktiviteter.length)?`<span>${aktiviteter.length} aktivitet${aktiviteter.length===1?'':'er'}</span>`:''}
             ${p.frist?`<span>${esc(p.frist)}</span>`:''}
             ${tagsInHeader}
             ${kommentarer.length?`<span style="color:var(--muted)">💬 ${kommentarer.length}</span>`:''}
@@ -856,19 +878,18 @@ function buildCard(p) {
       <div class="card-detail">
         ${editForm}
         ${detailGrid}
-        ${tagSection}
 
-        ${p.steg&&p.steg.length ? `
+        ${aktiviteter.length ? `
         <div class="card-section">
-          <span class="card-section-title">Steg / instruksjoner</span>
-          ${stegHTML}
+          <span class="card-section-title">Aktiviteter</span>
+          ${aktivitetHTML}
         </div>` : ''}
 
         <div class="card-section" style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px">
-          <span class="card-section-title">Legg til steg</span>
+          <span class="card-section-title">Legg til aktivitet</span>
           <div class="step-input-row">
-            <input type="text" id="si-${p.id}" placeholder="Nytt steg…" onkeydown="if(event.key==='Enter')addStep(${p.id})" />
-            <button class="btn-small" onclick="addStep(${p.id})">+ Steg</button>
+            <input type="text" id="si-${p.id}" placeholder="Ny aktivitet…" onkeydown="if(event.key==='Enter')addStep(${p.id})" />
+            <button class="btn-small" onclick="addStep(${p.id})">+ Aktivitet</button>
           </div>
         </div>
 
