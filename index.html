@@ -537,28 +537,39 @@ async function toggleAktTag(prosjektId, aktIdx, tagId) {
 }
 
 // ════════════════════════════════════════════════════════════
-// KOMMENTARER
+// KOMMENTARER — tilknyttet hver enkelt aktivitet
 // ════════════════════════════════════════════════════════════
-async function addKommentar(prosjektId) {
-  const navnEl  = document.getElementById(`k-navn-${prosjektId}`);
-  const tekstEl = document.getElementById(`k-tekst-${prosjektId}`);
+async function addKommentar(prosjektId, aktIdx) {
+  const navnEl  = document.getElementById(`k-navn-${prosjektId}-${aktIdx}`);
+  const tekstEl = document.getElementById(`k-tekst-${prosjektId}-${aktIdx}`);
   const navn    = navnEl.value.trim();
   const tekst   = tekstEl.value.trim();
   if (!tekst) { tekstEl.focus(); return; }
   const p = projects.find(p => p.id === prosjektId); if (!p) return;
-  const ny = { id: Date.now(), navn: navn || 'Anonym', tekst, tid: new Date().toISOString() };
+  const aktiviteter = [...(p.steg || [])];
+  const akt = aktiviteter[aktIdx];
+  if (!akt) return;
+  const obj = typeof akt === 'string' ? { tekst: akt, tags: [], kommentarer: [] } : { ...akt };
+  obj.kommentarer = [...(obj.kommentarer || []), {
+    id: Date.now(), navn: navn || 'Anonym', tekst, tid: new Date().toISOString()
+  }];
+  aktiviteter[aktIdx] = obj;
   try {
-    await dbPatch(prosjektId, { kommentarer: [...(p.kommentarer || []), ny] });
+    await dbPatch(prosjektId, { steg: aktiviteter });
     navnEl.value = ''; tekstEl.value = '';
     openCards.add(prosjektId);
     await loadAndRender();
   } catch(e) { alert('Feil: ' + e.message); }
 }
 
-async function deleteKommentar(prosjektId, komId) {
+async function deleteKommentar(prosjektId, aktIdx, komId) {
   const p = projects.find(p => p.id === prosjektId); if (!p) return;
+  const aktiviteter = [...(p.steg || [])];
+  const akt = aktiviteter[aktIdx];
+  if (!akt || typeof akt === 'string') return;
+  aktiviteter[aktIdx] = { ...akt, kommentarer: (akt.kommentarer||[]).filter(k => k.id !== komId) };
   try {
-    await dbPatch(prosjektId, { kommentarer: (p.kommentarer||[]).filter(k => k.id !== komId) });
+    await dbPatch(prosjektId, { steg: aktiviteter });
     openCards.add(prosjektId);
     await loadAndRender();
   } catch(e) { alert('Feil: ' + e.message); }
@@ -650,7 +661,7 @@ async function addStep(id) {
   const inp = document.getElementById('si-'+id);
   const val = inp.value.trim(); if (!val) return;
   const p = projects.find(p => p.id === id); if (!p) return;
-  const nyAkt = { tekst: val, tags: [] };
+  const nyAkt = { tekst: val, tags: [], kommentarer: [] };
   try { await dbPatch(id, {steg: [...(p.steg||[]), nyAkt]}); inp.value=''; openCards.add(id); await loadAndRender(); }
   catch(e) { alert('Feil: ' + e.message); }
 }
@@ -716,7 +727,6 @@ function buildCard(p) {
   const editing = editingCards.has(p.id);
   const dot     = p.status==='pagaar' ? 'var(--accent)' : p.status==='fullfort' ? '#4caf50' : 'var(--muted)';
   const aktiviteter = p.steg || [];
-  const kommentarer = p.kommentarer || [];
   const filer       = p.filer || [];
 
   // Samle unike tags på tvers av alle aktiviteter — vises i korthodet
@@ -726,12 +736,16 @@ function buildCard(p) {
     return def ? `<span class="tag tag-${t}">${def.label}</span>` : '';
   }).join('');
 
-  // ── Aktivitetsliste med tags per rad ──
+ // Totalt antall kommentarer på tvers av alle aktiviteter — korthodet
+  const totKomm = aktiviteter.reduce((s, a) => s + (typeof a === 'string' ? 0 : (a.kommentarer||[]).length), 0);
+
+  // ── Aktivitetsliste med tags og kommentarer per rad ──
   const aktivitetHTML = aktiviteter.length ? `
     <ul class="akt-list">
       ${aktiviteter.map((a, i) => {
-        const tekst = typeof a === 'string' ? a : (a.tekst || '');
-        const aktTags = typeof a === 'string' ? [] : (a.tags || []);
+        const tekst      = typeof a === 'string' ? a : (a.tekst || '');
+        const aktTags    = typeof a === 'string' ? [] : (a.tags || []);
+        const aktKomm    = typeof a === 'string' ? [] : (a.kommentarer || []);
         return `<li>
           <div class="akt-body">
             <div class="akt-tekst" id="st-${p.id}-${i}">${esc(tekst)}</div>
@@ -746,6 +760,31 @@ function buildCard(p) {
                   onclick="toggleAktTag(${p.id},${i},'${t.id}')">
                   ${t.label}
                 </button>`).join('')}
+            </div>
+            <div class="akt-komm-section">
+              ${aktKomm.length ? `<div class="kommentar-list" style="margin-top:10px">
+                ${aktKomm.map(k => `
+                  <div class="kommentar-item">
+                    <div class="kommentar-meta">
+                      <span class="kommentar-navn">${esc(k.navn)}</span>
+                      <span style="display:flex;align-items:center;gap:8px">
+                        <span class="kommentar-tid">${formatTid(k.tid)}</span>
+                        <button class="kommentar-del-btn" onclick="deleteKommentar(${p.id},${i},${k.id})" title="Slett">✕</button>
+                      </span>
+                    </div>
+                    <div class="kommentar-tekst">${esc(k.tekst)}</div>
+                  </div>`).join('')}
+              </div>` : ''}
+              <div class="kommentar-form" style="margin-top:8px">
+                <input class="kommentar-navn-inp" type="text" id="k-navn-${p.id}-${i}" placeholder="Ditt navn (valgfritt)…" />
+                <textarea class="kommentar-tekst-inp" id="k-tekst-${p.id}-${i}" placeholder="Kommentar til denne aktiviteten…"
+                  onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))addKommentar(${p.id},${i})"></textarea>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <button class="btn-small" onclick="addKommentar(${p.id},${i})">+ Kommentar</button>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted)">Ctrl+Enter</span>
+                  ${aktKomm.length ? `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted)">💬 ${aktKomm.length}</span>` : ''}
+                </div>
+              </div>
             </div>
           </div>
           <button class="step-btn sb" id="ss-${p.id}-${i}" onclick="saveStepEdit(${p.id},${i})">✓</button>
@@ -863,7 +902,7 @@ function buildCard(p) {
             ${(aktiviteter.length)?`<span>${aktiviteter.length} aktivitet${aktiviteter.length===1?'':'er'}</span>`:''}
             ${p.frist?`<span>${esc(p.frist)}</span>`:''}
             ${tagsInHeader}
-            ${kommentarer.length?`<span style="color:var(--muted)">💬 ${kommentarer.length}</span>`:''}
+            ${totKomm?`<span style="color:var(--muted)">💬 ${totKomm}</span>`:''}
             ${filer.length?`<span style="color:var(--muted)">📎 ${filer.length}</span>`:''}
           </div>
         </div>
@@ -893,8 +932,7 @@ function buildCard(p) {
           </div>
         </div>
 
-        ${kommentarSection}
-        ${filerSection}
+      ${filerSection}
 
         <div class="card-bottom-actions">
           <button class="btn-edit-project ${editing?'active':''}" onclick="toggleEditMode(${p.id})">
