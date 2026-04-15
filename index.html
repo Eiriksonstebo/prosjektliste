@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prosjektoversikt</title>
+<!-- Google Identity Services for innlogging -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Google API client for Drive-opplasting -->
+<script src="https://apis.google.com/js/api.js" async defer></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
 
@@ -12,10 +16,12 @@
     --border: #2a2a2a; --accent: #d4f000; --accent2: #ff6b35;
     --text: #f0f0f0; --muted: #666;
     --small: #ff6b35; --medium: #f5c518; --large: #5b8cff;
+    --tag-avhengig: #a78bfa; --tag-ferdig: #4ade80; --tag-klar: #38bdf8; --tag-stroket: #f87171;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; padding: 40px 24px; }
 
+  /* ── CONFIG BANNER ── */
   #config-banner { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.4); border-radius: 10px; padding: 20px 24px; margin-bottom: 32px; display: none; }
   #config-banner h3 { color: var(--accent2); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-family: 'DM Mono', monospace; }
   #config-banner p { font-size: 0.85rem; color: #ccc; margin-bottom: 12px; line-height: 1.6; }
@@ -23,22 +29,36 @@
   #config-banner input:focus { border-color: var(--accent); }
   #config-banner button { background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; padding: 10px 20px; cursor: pointer; }
 
-  #sync-status { display: flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 32px; }
+  /* ── TOP BAR ── */
+  #top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  #sync-status { display: flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
   .sync-dot.live { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse 2s infinite; }
   .sync-dot.error { background: #ff4444; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-  header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  /* ── GOOGLE LOGIN ── */
+  #google-auth-area { display: flex; align-items: center; gap: 12px; }
+  #user-info { display: none; align-items: center; gap: 10px; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); }
+  #user-avatar { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border); }
+  #user-name { color: var(--text); }
+  #btn-signout { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 4px 9px; cursor: pointer; transition: all 0.15s; }
+  #btn-signout:hover { border-color: #ff4444; color: #ff4444; }
+  #btn-signin { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 7px; font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 7px 13px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 7px; letter-spacing: 0.04em; }
+  #btn-signin:hover { border-color: var(--accent); color: var(--accent); }
+  #btn-signin svg { flex-shrink: 0; }
+
+  /* ── HEADER ── */
+  header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
   h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
   h1 span { color: var(--accent); }
   .stats { display: flex; gap: 24px; font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
   .stat strong { display: block; font-size: 1.5rem; color: var(--text); font-family: 'Syne', sans-serif; font-weight: 700; }
 
+  /* ── ADD FORM ── */
   .add-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
   .add-section h2 { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; font-family: 'DM Mono', monospace; }
   .form-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: start; }
-
   input[type="text"], textarea, select {
     background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
     color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.95rem;
@@ -47,10 +67,9 @@
   input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--accent); }
   select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
   select option { background: #1e1e1e; }
-
-  button.add-btn { background: var(--accent); color: #000; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; padding: 12px 20px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s, transform 0.1s; }
-  button.add-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-  button.add-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  button.add-btn { background: var(--accent); color: #000; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; padding: 12px 20px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; }
+  button.add-btn:hover { opacity: 0.85; }
+  button.add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .detail-toggle { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 12px 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
   .detail-toggle:hover, .detail-toggle.active { border-color: var(--accent); color: var(--accent); }
   .extra-fields { display: none; margin-top: 12px; gap: 12px; flex-direction: column; }
@@ -58,23 +77,23 @@
   .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   textarea { resize: vertical; min-height: 80px; }
 
+  /* ── FILTERS ── */
   .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
   .filter-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 14px; cursor: pointer; transition: all 0.15s; }
   .filter-btn:hover { border-color: var(--text); color: var(--text); }
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
 
+  /* ── CARDS ── */
   .projects { display: flex; flex-direction: column; gap: 12px; }
   .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s; }
   .project-card:hover { border-color: #3a3a3a; }
   .card-main { display: grid; grid-template-columns: auto 1fr auto auto; gap: 16px; align-items: center; padding: 18px 20px; cursor: pointer; }
-
   .size-badge { font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; white-space: nowrap; }
   .size-liten  { background: rgba(255,107,53,0.15); color: var(--small); border: 1px solid rgba(255,107,53,0.3); }
   .size-medium { background: rgba(245,197,24,0.12); color: var(--medium); border: 1px solid rgba(245,197,24,0.3); }
   .size-stor   { background: rgba(91,140,255,0.12); color: var(--large); border: 1px solid rgba(91,140,255,0.3); }
-
   .card-title { font-size: 1rem; font-weight: 600; }
-  .card-subtitle { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .card-subtitle { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chevron { color: var(--muted); transition: transform 0.25s; font-size: 1.1rem; }
   .project-card.open .chevron { transform: rotate(90deg); }
   .card-detail { display: none; border-top: 1px solid var(--border); padding: 20px; background: var(--surface2); }
@@ -82,7 +101,27 @@
   .status-select { font-size: 0.75rem; padding: 6px 10px; width: auto; }
   .card-main.status-fullfort .card-title { text-decoration: line-through; color: var(--muted); }
 
-  /* EDIT SECTION */
+  /* ── STATUS TAGS ── */
+  .tag { display: inline-flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; white-space: nowrap; font-weight: 500; }
+  .tag-avhengig { background: rgba(167,139,250,0.15); color: var(--tag-avhengig); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-ferdig   { background: rgba(74,222,128,0.12); color: var(--tag-ferdig);   border: 1px solid rgba(74,222,128,0.3); }
+  .tag-klar     { background: rgba(56,189,248,0.12); color: var(--tag-klar);     border: 1px solid rgba(56,189,248,0.3); }
+  .tag-stroket  { background: rgba(248,113,113,0.12); color: var(--tag-stroket); border: 1px solid rgba(248,113,113,0.3); }
+
+  .tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+  .tag-select-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .tag-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 0.65rem; padding: 4px 10px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.06em; text-transform: uppercase; }
+  .tag-btn:hover { border-color: var(--text); color: var(--text); }
+  .tag-btn.active-avhengig { background: rgba(167,139,250,0.15); color: var(--tag-avhengig); border-color: rgba(167,139,250,0.5); }
+  .tag-btn.active-ferdig   { background: rgba(74,222,128,0.12);  color: var(--tag-ferdig);   border-color: rgba(74,222,128,0.4); }
+  .tag-btn.active-klar     { background: rgba(56,189,248,0.12);  color: var(--tag-klar);     border-color: rgba(56,189,248,0.4); }
+  .tag-btn.active-stroket  { background: rgba(248,113,113,0.12); color: var(--tag-stroket);  border-color: rgba(248,113,113,0.4); }
+
+  /* ── SECTIONS INSIDE CARD ── */
+  .card-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .card-section-title { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: block; }
+
+  /* ── EDIT SECTION ── */
   .edit-section { background: var(--surface3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; display: none; }
   .edit-section.visible { display: block; }
   .edit-section-title { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
@@ -95,14 +134,12 @@
   .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 8px 14px; cursor: pointer; transition: all 0.15s; }
   .btn-cancel:hover { border-color: var(--text); color: var(--text); }
 
-  /* VIEW MODE fields */
-  .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  /* ── DETAIL GRID ── */
+  .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 4px; }
   .detail-item label { display: block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
   .detail-item p { font-size: 0.9rem; }
 
-  /* STEPS */
-  .steps-section { margin-top: 16px; }
-  .steps-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 8px; }
+  /* ── STEPS ── */
   .steps-list { list-style: none; counter-reset: step; }
   .steps-list li { counter-increment: step; display: grid; grid-template-columns: auto 1fr auto auto auto; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: center; }
   .steps-list li:last-child { border-bottom: none; }
@@ -117,12 +154,53 @@
   .step-btn.db:hover { color: #ff4444; }
   .step-btn.sb { display: none; color: var(--accent); }
   .step-btn.sb.on { display: inline-block; }
-
-  .step-input-row { display: flex; gap: 8px; margin-top: 14px; }
+  .step-input-row { display: flex; gap: 8px; margin-top: 12px; }
   .step-input-row input { flex: 1; }
   .btn-small { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; font-family: 'Syne', sans-serif; font-size: 0.8rem; padding: 8px 14px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-small:hover { border-color: var(--accent); color: var(--accent); }
 
+  /* ── KOMMENTARER ── */
+  .kommentar-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  .kommentar-item { background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+  .kommentar-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .kommentar-navn { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); font-weight: 500; }
+  .kommentar-tid { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+  .kommentar-tekst { font-size: 0.88rem; line-height: 1.5; color: #ddd; }
+  .kommentar-del-btn { background: transparent; border: none; cursor: pointer; color: var(--muted); font-size: 0.75rem; padding: 2px 4px; transition: color 0.12s; }
+  .kommentar-del-btn:hover { color: #ff4444; }
+  .kommentar-form { display: flex; flex-direction: column; gap: 8px; }
+  .kommentar-navn-inp { font-size: 0.85rem !important; padding: 9px 12px !important; }
+  .kommentar-tekst-inp { font-size: 0.88rem !important; padding: 9px 12px !important; min-height: 70px; }
+
+  /* ── FILER ── */
+  .filer-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .fil-item { display: flex; align-items: center; gap: 10px; background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+  .fil-ikon { font-size: 1.1rem; flex-shrink: 0; }
+  .fil-info { flex: 1; min-width: 0; }
+  .fil-navn { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fil-meta { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+  .fil-link { color: var(--accent); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 0.7rem; white-space: nowrap; }
+  .fil-link:hover { text-decoration: underline; }
+  .fil-del-btn { background: transparent; border: none; cursor: pointer; color: var(--muted); font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; transition: all 0.12s; flex-shrink: 0; }
+  .fil-del-btn:hover { color: #ff4444; }
+
+  .upload-area { border: 1px dashed var(--border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+  .upload-area:hover, .upload-area.dragover { border-color: var(--accent); background: rgba(212,240,0,0.04); }
+  .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-area-text { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); pointer-events: none; }
+  .upload-area-text strong { display: block; color: var(--text); margin-bottom: 4px; font-size: 0.85rem; }
+  .upload-progress { display: none; margin-top: 10px; }
+  .upload-progress.visible { display: block; }
+  .progress-bar-outer { background: var(--border); border-radius: 4px; height: 4px; overflow: hidden; margin-top: 6px; }
+  .progress-bar-inner { background: var(--accent); height: 100%; width: 0%; transition: width 0.3s; border-radius: 4px; }
+  .upload-status-text { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+
+  .login-required { display: flex; align-items: center; gap: 10px; background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+  .login-required p { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); flex: 1; }
+  .btn-login-inline { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 7px 13px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn-login-inline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── BOTTOM ACTIONS ── */
   .card-bottom-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
   .btn-edit-project { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 6px 12px; cursor: pointer; transition: all 0.15s; }
   .btn-edit-project:hover, .btn-edit-project.active { border-color: var(--accent); color: var(--accent); background: rgba(212,240,0,0.05); }
@@ -137,7 +215,7 @@
     .extra-row { grid-template-columns: 1fr; }
     header { flex-direction: column; align-items: flex-start; gap: 16px; }
     .stats { gap: 16px; }
-    .steps-list li { grid-template-columns: auto 1fr auto auto auto; }
+    #top-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
   }
 </style>
 </head>
@@ -151,9 +229,22 @@
   <button onclick="saveConfig()">Lagre og koble til</button>
 </div>
 
-<div id="sync-status">
-  <span class="sync-dot" id="sync-dot"></span>
-  <span id="sync-text">Kobler til database…</span>
+<div id="top-bar">
+  <div id="sync-status">
+    <span class="sync-dot" id="sync-dot"></span>
+    <span id="sync-text">Kobler til database…</span>
+  </div>
+  <div id="google-auth-area">
+    <div id="user-info">
+      <img id="user-avatar" src="" alt="" />
+      <span id="user-name"></span>
+      <button id="btn-signout" onclick="signOut()">Logg ut</button>
+    </div>
+    <button id="btn-signin" onclick="signIn()">
+      <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
+      Logg inn med Google
+    </button>
+  </div>
 </div>
 
 <header>
@@ -202,26 +293,109 @@
 </div>
 
 <script>
+// ════════════════════════════════════════════════════════════
+// KONFIGURASJON — fyll inn dine verdier her
+// ════════════════════════════════════════════════════════════
 let SUPABASE_URL = localStorage.getItem('sb_url') || '';
 let SUPABASE_KEY = localStorage.getItem('sb_key') || '';
-let projects = [];
-let activeFilter = 'alle';
-let showDetails = false;
-let openCards    = new Set(); // hvilke kort er utvidet
-let editingCards = new Set(); // hvilke kort er i redigeringsmodus
 
-// ── CONFIG ────────────────────────────────────────────────────
+// Google OAuth klient-ID — hentes fra Google Cloud Console
+// Se guide: Erstatt denne med din egen klient-ID
+const GOOGLE_CLIENT_ID = localStorage.getItem('g_client_id') || 'DIN_GOOGLE_CLIENT_ID_HER';
+
+// Google Drive mappe-ID (valgfritt) — filer lastes opp hit
+// Sett til 'root' for å laste opp til rot-mappen i Drive
+const DRIVE_FOLDER_ID = localStorage.getItem('g_folder_id') || 'root';
+
+// ════════════════════════════════════════════════════════════
+// APP STATE
+// ════════════════════════════════════════════════════════════
+let projects     = [];
+let activeFilter = 'alle';
+let showDetails  = false;
+let openCards    = new Set();
+let editingCards = new Set();
+
+// Google auth state
+let googleAccessToken = null;
+let googleUser        = null;
+
+// ════════════════════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════════════════════
 function saveConfig() {
   const url = document.getElementById('cfg-url').value.trim();
   const key = document.getElementById('cfg-key').value.trim();
   if (!url || !key) return alert('Fyll inn begge feltene.');
-  localStorage.setItem('sb_url', url); localStorage.setItem('sb_key', key);
+  localStorage.setItem('sb_url', url);
+  localStorage.setItem('sb_key', key);
   SUPABASE_URL = url; SUPABASE_KEY = key;
   document.getElementById('config-banner').style.display = 'none';
   init();
 }
 
-// ── SUPABASE ──────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+// GOOGLE INNLOGGING
+// Bruker Google Identity Services (GIS) — nyeste Google auth
+// ════════════════════════════════════════════════════════════
+let tokenClient = null;
+
+function initGoogleAuth() {
+  if (!window.google || GOOGLE_CLIENT_ID === 'DIN_GOOGLE_CLIENT_ID_HER') return;
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    // Ber om tilgang til å laste opp filer til Drive
+    scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile',
+    callback: (resp) => {
+      if (resp.error) { console.error('Google auth error:', resp); return; }
+      googleAccessToken = resp.access_token;
+      // Hent brukerinfo
+      fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${googleAccessToken}` }
+      }).then(r => r.json()).then(info => {
+        googleUser = info;
+        updateAuthUI();
+        render();
+      });
+    }
+  });
+}
+
+function signIn() {
+  if (!tokenClient) {
+    // Hvis Google Client ID ikke er konfigurert, vis hjelpetekst
+    if (GOOGLE_CLIENT_ID === 'DIN_GOOGLE_CLIENT_ID_HER') {
+      const id = prompt('Lim inn din Google OAuth Klient-ID (fra Google Cloud Console):');
+      if (id) { localStorage.setItem('g_client_id', id); location.reload(); }
+      return;
+    }
+    alert('Google innlogging er ikke klar ennå, prøv igjen om et sekund.');
+    return;
+  }
+  tokenClient.requestAccessToken();
+}
+
+function signOut() {
+  if (googleAccessToken) google.accounts.oauth2.revoke(googleAccessToken);
+  googleAccessToken = null;
+  googleUser = null;
+  updateAuthUI();
+  render();
+}
+
+function updateAuthUI() {
+  const signedIn = !!googleUser;
+  document.getElementById('btn-signin').style.display  = signedIn ? 'none' : 'flex';
+  document.getElementById('user-info').style.display   = signedIn ? 'flex' : 'none';
+  if (signedIn) {
+    document.getElementById('user-name').textContent   = googleUser.name || googleUser.email;
+    document.getElementById('user-avatar').src         = googleUser.picture || '';
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// SUPABASE API
+// ════════════════════════════════════════════════════════════
 async function sbFetch(method, path, body = null) {
   const opts = { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal' } };
   if (body) opts.body = JSON.stringify(body);
@@ -229,12 +403,14 @@ async function sbFetch(method, path, body = null) {
   if (!res.ok) throw new Error(`Supabase-feil (${res.status}): ${await res.text()}`);
   const t = await res.text(); return t ? JSON.parse(t) : null;
 }
-const fetchAll  = ()      => sbFetch('GET',    '/rest/v1/prosjekter?order=opprettet.desc');
-const dbCreate  = (d)     => sbFetch('POST',   '/rest/v1/prosjekter', d);
-const dbPatch   = (id, d) => sbFetch('PATCH',  `/rest/v1/prosjekter?id=eq.${id}`, d);
-const dbDelete  = (id)    => sbFetch('DELETE', `/rest/v1/prosjekter?id=eq.${id}`);
+const fetchAll = ()      => sbFetch('GET',    '/rest/v1/prosjekter?order=opprettet.desc');
+const dbCreate = (d)     => sbFetch('POST',   '/rest/v1/prosjekter', d);
+const dbPatch  = (id, d) => sbFetch('PATCH',  `/rest/v1/prosjekter?id=eq.${id}`, d);
+const dbDelete = (id)    => sbFetch('DELETE', `/rest/v1/prosjekter?id=eq.${id}`);
 
-// ── REALTIME ──────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+// REALTIME
+// ════════════════════════════════════════════════════════════
 function setupRealtime() {
   const ws = new WebSocket(SUPABASE_URL.replace('https://','wss://') + '/realtime/v1/websocket?apikey=' + SUPABASE_KEY + '&vsn=1.0.0');
   ws.onopen    = () => { ws.send(JSON.stringify({topic:'realtime:public:prosjekter',event:'phx_join',payload:{},ref:'1'})); setSyncStatus('live','Tilkoblet — synkroniserer i sanntid'); };
@@ -247,7 +423,141 @@ function setSyncStatus(t, txt) {
   document.getElementById('sync-text').textContent = txt;
 }
 
-// ── INIT ──────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+// GOOGLE DRIVE OPPLASTING
+// ════════════════════════════════════════════════════════════
+async function uploadToDrive(file, prosjektId) {
+  if (!googleAccessToken) { signIn(); return; }
+
+  const progArea  = document.getElementById(`upload-prog-${prosjektId}`);
+  const progBar   = document.getElementById(`prog-bar-${prosjektId}`);
+  const progTxt   = document.getElementById(`prog-txt-${prosjektId}`);
+  progArea.classList.add('visible');
+  progTxt.textContent = `Laster opp ${file.name}…`;
+  progBar.style.width = '10%';
+
+  // Steg 1: opprett filen i Drive med metadata
+  const metadata = {
+    name: file.name,
+    parents: [DRIVE_FOLDER_ID]
+  };
+
+  try {
+    // Bruk multipart upload for å sende både metadata og innhold i én forespørsel
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+    form.append('file', file);
+
+    progBar.style.width = '40%';
+
+    const res = await fetch(
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink,mimeType,size',
+      { method: 'POST', headers: { Authorization: `Bearer ${googleAccessToken}` }, body: form }
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error('Drive-feil: ' + err);
+    }
+
+    progBar.style.width = '75%';
+    const driveFile = await res.json();
+
+    // Steg 2: gjør filen tilgjengelig for alle med lenken
+    await fetch(`https://www.googleapis.com/drive/v3/files/${driveFile.id}/permissions`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${googleAccessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: 'reader', type: 'anyone' })
+    });
+
+    progBar.style.width = '90%';
+
+    // Steg 3: lagre filinfo i Supabase på prosjektet
+    const p = projects.find(p => p.id === prosjektId);
+    if (!p) return;
+
+    const nyFil = {
+      id:       driveFile.id,
+      navn:     driveFile.name,
+      lenke:    driveFile.webViewLink,
+      type:     driveFile.mimeType,
+      lastetOpp: new Date().toISOString(),
+      lastetOppAv: googleUser ? googleUser.name : 'Ukjent'
+    };
+
+    await dbPatch(prosjektId, { filer: [...(p.filer || []), nyFil] });
+    progBar.style.width = '100%';
+    progTxt.textContent = `✓ ${file.name} lastet opp`;
+    setTimeout(() => { progArea.classList.remove('visible'); progBar.style.width='0%'; }, 2000);
+    openCards.add(prosjektId);
+    await loadAndRender();
+
+  } catch(e) {
+    progTxt.textContent = '⚠ Feil: ' + e.message;
+    progBar.style.width = '100%';
+    progBar.style.background = '#ff4444';
+    setTimeout(() => { progArea.classList.remove('visible'); progBar.style.width='0%'; progBar.style.background=''; }, 3000);
+  }
+}
+
+async function deleteFil(prosjektId, filId) {
+  const p = projects.find(p => p.id === prosjektId); if (!p) return;
+  try {
+    await dbPatch(prosjektId, { filer: (p.filer || []).filter(f => f.id !== filId) });
+    openCards.add(prosjektId);
+    await loadAndRender();
+  } catch(e) { alert('Feil: ' + e.message); }
+}
+
+// ════════════════════════════════════════════════════════════
+// TAGS
+// ════════════════════════════════════════════════════════════
+const TAG_DEF = [
+  { id: 'avhengig', label: 'Avhengig av tidligere aktivitet' },
+  { id: 'ferdig',   label: 'Ferdig' },
+  { id: 'klar',     label: 'Klar' },
+  { id: 'stroket',  label: 'Strøket' },
+];
+
+async function toggleTag(prosjektId, tagId) {
+  const p = projects.find(p => p.id === prosjektId); if (!p) return;
+  const tags = p.tags || [];
+  const nyeTags = tags.includes(tagId) ? tags.filter(t => t !== tagId) : [...tags, tagId];
+  try { await dbPatch(prosjektId, {tags: nyeTags}); openCards.add(prosjektId); await loadAndRender(); }
+  catch(e) { alert('Feil: ' + e.message); }
+}
+
+// ════════════════════════════════════════════════════════════
+// KOMMENTARER
+// ════════════════════════════════════════════════════════════
+async function addKommentar(prosjektId) {
+  const navnEl  = document.getElementById(`k-navn-${prosjektId}`);
+  const tekstEl = document.getElementById(`k-tekst-${prosjektId}`);
+  const navn    = navnEl.value.trim();
+  const tekst   = tekstEl.value.trim();
+  if (!tekst) { tekstEl.focus(); return; }
+  const p = projects.find(p => p.id === prosjektId); if (!p) return;
+  const ny = { id: Date.now(), navn: navn || 'Anonym', tekst, tid: new Date().toISOString() };
+  try {
+    await dbPatch(prosjektId, { kommentarer: [...(p.kommentarer || []), ny] });
+    navnEl.value = ''; tekstEl.value = '';
+    openCards.add(prosjektId);
+    await loadAndRender();
+  } catch(e) { alert('Feil: ' + e.message); }
+}
+
+async function deleteKommentar(prosjektId, komId) {
+  const p = projects.find(p => p.id === prosjektId); if (!p) return;
+  try {
+    await dbPatch(prosjektId, { kommentarer: (p.kommentarer||[]).filter(k => k.id !== komId) });
+    openCards.add(prosjektId);
+    await loadAndRender();
+  } catch(e) { alert('Feil: ' + e.message); }
+}
+
+// ════════════════════════════════════════════════════════════
+// PROSJEKT CRUD
+// ════════════════════════════════════════════════════════════
 async function init() {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     document.getElementById('config-banner').style.display = 'block';
@@ -255,14 +565,12 @@ async function init() {
   }
   try { await loadAndRender(); setupRealtime(); }
   catch(e) { setSyncStatus('error','Tilkoblingsfeil'); document.getElementById('project-list').innerHTML = `<div class="empty-state"><span class="big">⚠</span>${e.message}</div>`; }
+  // Init Google auth etter at scripts er lastet
+  setTimeout(initGoogleAuth, 1000);
 }
 
-async function loadAndRender() {
-  projects = await fetchAll() || [];
-  render();
-}
+async function loadAndRender() { projects = await fetchAll() || []; render(); }
 
-// ── LEGG TIL PROSJEKT ─────────────────────────────────────────
 function toggleDetailFields() {
   showDetails = !showDetails;
   document.getElementById('extra-fields').classList.toggle('visible', showDetails);
@@ -282,7 +590,8 @@ async function addProject() {
       ansvarlig: document.getElementById('inp-ansvarlig').value.trim()||null,
       frist: document.getElementById('inp-frist').value.trim()||null,
       beskrivelse: document.getElementById('inp-beskrivelse').value.trim()||null,
-      steg, opprettet: new Date().toISOString() });
+      steg, tags: [], kommentarer: [], filer: [],
+      opprettet: new Date().toISOString() });
     ['inp-navn','inp-ansvarlig','inp-frist','inp-beskrivelse','inp-steg1'].forEach(id => document.getElementById(id).value='');
     if (showDetails) toggleDetailFields();
     await loadAndRender();
@@ -290,7 +599,6 @@ async function addProject() {
   b.disabled = false; b.textContent = 'Legg til';
 }
 
-// ── STATUS ────────────────────────────────────────────────────
 function setFilter(f, btn) {
   activeFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -302,36 +610,33 @@ async function updateStatus(id, val) {
   catch(e) { alert('Feil: ' + e.message); }
 }
 
-// ── SLETT PROSJEKT ────────────────────────────────────────────
 async function deleteProject(id) {
   if (!confirm('Slett dette prosjektet?')) return;
   try { await dbDelete(id); openCards.delete(id); editingCards.delete(id); await loadAndRender(); }
   catch(e) { alert('Feil: ' + e.message); }
 }
 
-// ── REDIGER PROSJEKTFELTER ────────────────────────────────────
 function toggleEditMode(id) {
-  if (editingCards.has(id)) { editingCards.delete(id); }
+  if (editingCards.has(id)) editingCards.delete(id);
   else { editingCards.add(id); openCards.add(id); }
   render();
   if (editingCards.has(id)) setTimeout(() => { const el = document.getElementById(`en-${id}`); if(el) el.focus(); }, 40);
 }
 
 async function saveProjectEdit(id) {
-  const p = projects.find(p => p.id === id);
-  if (!p) return;
-  const patch = {
-    navn:        document.getElementById(`en-${id}`).value.trim() || p.navn,
-    storrelse:   document.getElementById(`es-${id}`).value,
-    ansvarlig:   document.getElementById(`ea-${id}`).value.trim() || null,
-    frist:       document.getElementById(`ef-${id}`).value.trim() || null,
-    beskrivelse: document.getElementById(`eb-${id}`).value.trim() || null,
-  };
-  try { await dbPatch(id, patch); editingCards.delete(id); await loadAndRender(); }
-  catch(e) { alert('Kunne ikke lagre: ' + e.message); }
+  const p = projects.find(p => p.id === id); if (!p) return;
+  try {
+    await dbPatch(id, {
+      navn:        document.getElementById(`en-${id}`).value.trim() || p.navn,
+      storrelse:   document.getElementById(`es-${id}`).value,
+      ansvarlig:   document.getElementById(`ea-${id}`).value.trim() || null,
+      frist:       document.getElementById(`ef-${id}`).value.trim() || null,
+      beskrivelse: document.getElementById(`eb-${id}`).value.trim() || null,
+    });
+    editingCards.delete(id); await loadAndRender();
+  } catch(e) { alert('Kunne ikke lagre: ' + e.message); }
 }
 
-// ── STEG ──────────────────────────────────────────────────────
 async function addStep(id) {
   const inp = document.getElementById('si-'+id);
   const val = inp.value.trim(); if (!val) return;
@@ -342,60 +647,158 @@ async function addStep(id) {
 
 async function deleteStep(id, i) {
   const p = projects.find(p => p.id === id); if (!p) return;
-  try { await dbPatch(id, {steg: p.steg.filter((_,j) => j !== i)}); openCards.add(id); await loadAndRender(); }
+  try { await dbPatch(id, {steg: p.steg.filter((_,j)=>j!==i)}); openCards.add(id); await loadAndRender(); }
   catch(e) { alert('Feil: ' + e.message); }
 }
 
 function toggleStepEdit(id, i) {
-  const t = document.getElementById(`st-${id}-${i}`);
-  const inp = document.getElementById(`se-${id}-${i}`);
-  const sb = document.getElementById(`ss-${id}-${i}`);
-  const on = inp.classList.contains('on');
-  if (on) { t.classList.remove('off'); inp.classList.remove('on'); sb.classList.remove('on'); }
-  else    { inp.value = t.textContent; t.classList.add('off'); inp.classList.add('on'); sb.classList.add('on'); inp.focus(); }
+  const t=document.getElementById(`st-${id}-${i}`), inp=document.getElementById(`se-${id}-${i}`), sb=document.getElementById(`ss-${id}-${i}`);
+  const on=inp.classList.contains('on');
+  if(on){t.classList.remove('off');inp.classList.remove('on');sb.classList.remove('on');}
+  else{inp.value=t.textContent;t.classList.add('off');inp.classList.add('on');sb.classList.add('on');inp.focus();}
 }
 
 async function saveStepEdit(id, i) {
-  const inp = document.getElementById(`se-${id}-${i}`);
-  const val = inp.value.trim(); if (!val) return;
-  const p = projects.find(p => p.id === id); if (!p) return;
-  const s = [...p.steg]; s[i] = val;
-  try { await dbPatch(id, {steg: s}); openCards.add(id); await loadAndRender(); }
-  catch(e) { alert('Feil: ' + e.message); }
+  const inp=document.getElementById(`se-${id}-${i}`); const val=inp.value.trim(); if(!val) return;
+  const p=projects.find(p=>p.id===id); if(!p) return;
+  const s=[...p.steg]; s[i]=val;
+  try { await dbPatch(id,{steg:s}); openCards.add(id); await loadAndRender(); }
+  catch(e){ alert('Feil: '+e.message); }
 }
 
-// ── TOGGLE KORT ───────────────────────────────────────────────
 function toggleCard(id) {
-  if (openCards.has(id)) { openCards.delete(id); editingCards.delete(id); }
-  else openCards.add(id);
+  if(openCards.has(id)){openCards.delete(id);editingCards.delete(id);}else openCards.add(id);
   render();
 }
 
-// ── BYGG KORT ─────────────────────────────────────────────────
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// ════════════════════════════════════════════════════════════
+// RENDERING
+// ════════════════════════════════════════════════════════════
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function formatTid(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('no-NO') + ' ' + d.toLocaleTimeString('no-NO', {hour:'2-digit',minute:'2-digit'});
+}
+
+function filIkon(mime) {
+  if (!mime) return '📎';
+  if (mime.startsWith('image/')) return '🖼';
+  if (mime.includes('pdf')) return '📄';
+  if (mime.includes('sheet') || mime.includes('excel')) return '📊';
+  if (mime.includes('presentation') || mime.includes('powerpoint')) return '📊';
+  if (mime.includes('word') || mime.includes('document')) return '📝';
+  if (mime.includes('video')) return '🎬';
+  if (mime.includes('audio')) return '🎵';
+  if (mime.includes('zip') || mime.includes('compressed')) return '🗜';
+  return '📎';
+}
 
 function buildCard(p) {
-  const open = openCards.has(p.id);
+  const open    = openCards.has(p.id);
   const editing = editingCards.has(p.id);
-  const dot = p.status==='pagaar' ? 'var(--accent)' : p.status==='fullfort' ? '#4caf50' : 'var(--muted)';
+  const dot     = p.status==='pagaar' ? 'var(--accent)' : p.status==='fullfort' ? '#4caf50' : 'var(--muted)';
+  const tags    = p.tags || [];
+  const kommentarer = p.kommentarer || [];
+  const filer   = p.filer || [];
 
-  // Steg med inline rediger/slett
+  // Tags i korthodet
+  const tagsInHeader = tags.length ? tags.map(t => {
+    const def = TAG_DEF.find(d => d.id === t);
+    return def ? `<span class="tag tag-${t}">${def.label}</span>` : '';
+  }).join('') : '';
+
+  // ── Tag-velger ──
+  const tagSection = `
+    <div class="card-section">
+      <span class="card-section-title">Status-tags</span>
+      <div class="tags-row">
+        ${TAG_DEF.map(t => `
+          <button class="tag-btn ${tags.includes(t.id) ? 'active-'+t.id : ''}"
+            onclick="toggleTag(${p.id},'${t.id}')">
+            ${t.label}
+          </button>`).join('')}
+      </div>
+    </div>`;
+
+  // ── Steg ──
   const stegHTML = p.steg && p.steg.length ? `
-    <div class="steps-section">
-      <span class="steps-label">Steg / instruksjoner</span>
-      <ul class="steps-list">
-        ${p.steg.map((s,i) => `<li>
-          <span class="step-text" id="st-${p.id}-${i}">${esc(s)}</span>
-          <input class="step-edit-inp" id="se-${p.id}-${i}"
-            onkeydown="if(event.key==='Enter')saveStepEdit(${p.id},${i});if(event.key==='Escape')toggleStepEdit(${p.id},${i})" />
-          <button class="step-btn sb" id="ss-${p.id}-${i}" title="Lagre" onclick="saveStepEdit(${p.id},${i})">✓</button>
-          <button class="step-btn eb" title="Rediger" onclick="toggleStepEdit(${p.id},${i})">✎</button>
-          <button class="step-btn db" title="Slett" onclick="deleteStep(${p.id},${i})">✕</button>
-        </li>`).join('')}
-      </ul>
-    </div>` : '';
+    <ul class="steps-list">
+      ${p.steg.map((s,i) => `<li>
+        <span class="step-text" id="st-${p.id}-${i}">${esc(s)}</span>
+        <input class="step-edit-inp" id="se-${p.id}-${i}" onkeydown="if(event.key==='Enter')saveStepEdit(${p.id},${i});if(event.key==='Escape')toggleStepEdit(${p.id},${i})" />
+        <button class="step-btn sb" id="ss-${p.id}-${i}" onclick="saveStepEdit(${p.id},${i})">✓</button>
+        <button class="step-btn eb" onclick="toggleStepEdit(${p.id},${i})">✎</button>
+        <button class="step-btn db" onclick="deleteStep(${p.id},${i})">✕</button>
+      </li>`).join('')}
+    </ul>` : '';
 
-  // Redigeringsskjema for prosjektfelter
+  // ── Kommentarer ──
+  const kommentarSection = `
+    <div class="card-section">
+      <span class="card-section-title">Kommentarer (${kommentarer.length})</span>
+      ${kommentarer.length ? `<div class="kommentar-list">
+        ${kommentarer.map(k => `
+          <div class="kommentar-item">
+            <div class="kommentar-meta">
+              <span class="kommentar-navn">${esc(k.navn)}</span>
+              <span style="display:flex;align-items:center;gap:8px">
+                <span class="kommentar-tid">${formatTid(k.tid)}</span>
+                <button class="kommentar-del-btn" onclick="deleteKommentar(${p.id},${k.id})" title="Slett">✕</button>
+              </span>
+            </div>
+            <div class="kommentar-tekst">${esc(k.tekst)}</div>
+          </div>`).join('')}
+      </div>` : ''}
+      <div class="kommentar-form">
+        <input class="kommentar-navn-inp" type="text" id="k-navn-${p.id}" placeholder="Ditt navn (valgfritt)…" />
+        <textarea class="kommentar-tekst-inp" id="k-tekst-${p.id}" placeholder="Skriv en kommentar…"
+          onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))addKommentar(${p.id})"></textarea>
+        <div>
+          <button class="btn-small" onclick="addKommentar(${p.id})">Legg til kommentar</button>
+          <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-left:10px;">Ctrl+Enter</span>
+        </div>
+      </div>
+    </div>`;
+
+  // ── Filer ──
+  const filerSection = `
+    <div class="card-section">
+      <span class="card-section-title">Filer (${filer.length})</span>
+      ${filer.length ? `<div class="filer-list">
+        ${filer.map(f => `
+          <div class="fil-item">
+            <span class="fil-ikon">${filIkon(f.type)}</span>
+            <div class="fil-info">
+              <div class="fil-navn">${esc(f.navn)}</div>
+              <div class="fil-meta">Lastet opp av ${esc(f.lastetOppAv)} · ${formatTid(f.lastetOpp)}</div>
+            </div>
+            <a href="${esc(f.lenke)}" target="_blank" class="fil-link">Åpne ↗</a>
+            <button class="fil-del-btn" onclick="deleteFil(${p.id},'${f.id}')" title="Fjern">✕</button>
+          </div>`).join('')}
+      </div>` : ''}
+      ${googleUser ? `
+        <div class="upload-area" id="upload-area-${p.id}"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="event.preventDefault();this.classList.remove('dragover');if(event.dataTransfer.files[0])uploadToDrive(event.dataTransfer.files[0],${p.id})">
+          <input type="file" onchange="if(this.files[0])uploadToDrive(this.files[0],${p.id})" />
+          <div class="upload-area-text">
+            <strong>Klikk eller dra fil hit</strong>
+            Laster opp til Google Drive
+          </div>
+        </div>
+        <div class="upload-progress" id="upload-prog-${p.id}">
+          <span class="upload-status-text" id="prog-txt-${p.id}"></span>
+          <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog-bar-${p.id}"></div></div>
+        </div>` : `
+        <div class="login-required">
+          <p>Logg inn med Google for å laste opp filer til Drive.</p>
+          <button class="btn-login-inline" onclick="signIn()">Logg inn</button>
+        </div>`}
+    </div>`;
+
+  // ── Redigeringsskjema ──
   const editForm = `
     <div class="edit-section ${editing?'visible':''}">
       <div class="edit-section-title">✎ Rediger prosjektinfo</div>
@@ -416,9 +819,9 @@ function buildCard(p) {
       </div>
     </div>`;
 
-  // Visningsfelter (skjules i redigeringsmodus)
+  // ── Visningsfelter ──
   const detailGrid = !editing && (p.ansvarlig||p.frist||p.beskrivelse||p.opprettet) ? `
-    <div class="detail-grid">
+    <div class="detail-grid" style="margin-bottom:4px">
       ${p.ansvarlig?`<div class="detail-item"><label>Ansvarlig</label><p>${esc(p.ansvarlig)}</p></div>`:''}
       ${p.frist    ?`<div class="detail-item"><label>Frist</label><p>${esc(p.frist)}</p></div>`:''}
       ${p.opprettet?`<div class="detail-item"><label>Opprettet</label><p>${new Date(p.opprettet).toLocaleDateString('no-NO')}</p></div>`:''}
@@ -431,10 +834,16 @@ function buildCard(p) {
         <span class="size-badge size-${p.storrelse}">${p.storrelse}</span>
         <div>
           <div class="card-title">
-            <span style="width:7px;height:7px;border-radius:50%;background:${dot};display:inline-block;margin-right:8px;flex-shrink:0"></span>
+            <span style="width:7px;height:7px;border-radius:50%;background:${dot};display:inline-block;margin-right:8px;"></span>
             ${esc(p.navn)}
           </div>
-          ${(p.steg&&p.steg.length)||p.frist?`<div class="card-subtitle">${p.steg&&p.steg.length?p.steg.length+' steg':''}${p.frist?((p.steg&&p.steg.length?' · ':'')+esc(p.frist)):''}</div>`:''}
+          <div class="card-subtitle">
+            ${(p.steg&&p.steg.length)?`<span>${p.steg.length} steg</span>`:''}
+            ${p.frist?`<span>${esc(p.frist)}</span>`:''}
+            ${tagsInHeader}
+            ${kommentarer.length?`<span style="color:var(--muted)">💬 ${kommentarer.length}</span>`:''}
+            ${filer.length?`<span style="color:var(--muted)">📎 ${filer.length}</span>`:''}
+          </div>
         </div>
         <select class="status-select" onclick="event.stopPropagation()" onchange="updateStatus(${p.id},this.value)">
           <option value="ikke-startet" ${p.status==='ikke-startet'?'selected':''}>Ikke startet</option>
@@ -443,14 +852,29 @@ function buildCard(p) {
         </select>
         <span class="chevron">›</span>
       </div>
+
       <div class="card-detail">
         ${editForm}
         ${detailGrid}
-        ${stegHTML}
-        <div class="step-input-row">
-          <input type="text" id="si-${p.id}" placeholder="Legg til nytt steg…" onkeydown="if(event.key==='Enter')addStep(${p.id})" />
-          <button class="btn-small" onclick="addStep(${p.id})">+ Steg</button>
+        ${tagSection}
+
+        ${p.steg&&p.steg.length ? `
+        <div class="card-section">
+          <span class="card-section-title">Steg / instruksjoner</span>
+          ${stegHTML}
+        </div>` : ''}
+
+        <div class="card-section" style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px">
+          <span class="card-section-title">Legg til steg</span>
+          <div class="step-input-row">
+            <input type="text" id="si-${p.id}" placeholder="Nytt steg…" onkeydown="if(event.key==='Enter')addStep(${p.id})" />
+            <button class="btn-small" onclick="addStep(${p.id})">+ Steg</button>
+          </div>
         </div>
+
+        ${kommentarSection}
+        ${filerSection}
+
         <div class="card-bottom-actions">
           <button class="btn-edit-project ${editing?'active':''}" onclick="toggleEditMode(${p.id})">
             ${editing ? '✕ Avbryt redigering' : '✎ Rediger prosjekt'}
