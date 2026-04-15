@@ -8,91 +8,41 @@
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
 
   :root {
-    --bg: #0f0f0f;
-    --surface: #161616;
-    --surface2: #1e1e1e;
-    --border: #2a2a2a;
-    --accent: #d4f000;
-    --accent2: #ff6b35;
-    --text: #f0f0f0;
-    --muted: #666;
-    --small: #ff6b35;
-    --medium: #f5c518;
-    --large: #5b8cff;
+    --bg: #0f0f0f; --surface: #161616; --surface2: #1e1e1e; --surface3: #252525;
+    --border: #2a2a2a; --accent: #d4f000; --accent2: #ff6b35;
+    --text: #f0f0f0; --muted: #666;
+    --small: #ff6b35; --medium: #f5c518; --large: #5b8cff;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; padding: 40px 24px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    padding: 40px 24px;
-  }
-
-  /* CONFIG BANNER */
-  #config-banner {
-    background: rgba(255,107,53,0.12);
-    border: 1px solid rgba(255,107,53,0.4);
-    border-radius: 10px;
-    padding: 20px 24px;
-    margin-bottom: 32px;
-    display: none;
-  }
+  #config-banner { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.4); border-radius: 10px; padding: 20px 24px; margin-bottom: 32px; display: none; }
   #config-banner h3 { color: var(--accent2); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-family: 'DM Mono', monospace; }
   #config-banner p { font-size: 0.85rem; color: #ccc; margin-bottom: 12px; line-height: 1.6; }
   #config-banner input { background: #111; border: 1px solid #444; border-radius: 6px; color: #fff; font-family: 'DM Mono', monospace; font-size: 0.8rem; padding: 10px 12px; width: 100%; margin-bottom: 8px; outline: none; }
   #config-banner input:focus { border-color: var(--accent); }
   #config-banner button { background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; padding: 10px 20px; cursor: pointer; }
 
-  /* SYNC STATUS */
-  #sync-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    margin-bottom: 32px;
-  }
+  #sync-status { display: flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 32px; }
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
   .sync-dot.live { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse 2s infinite; }
   .sync-dot.error { background: #ff4444; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-  header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 48px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-  }
-
+  header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
   h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
   h1 span { color: var(--accent); }
-
   .stats { display: flex; gap: 24px; font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
   .stat strong { display: block; font-size: 1.5rem; color: var(--text); font-family: 'Syne', sans-serif; font-weight: 700; }
 
   .add-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
   .add-section h2 { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; font-family: 'DM Mono', monospace; }
-
   .form-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: start; }
 
   input[type="text"], textarea, select {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.95rem;
-    padding: 12px 14px;
-    transition: border-color 0.2s;
-    outline: none;
-    width: 100%;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.95rem;
+    padding: 12px 14px; transition: border-color 0.2s; outline: none; width: 100%;
   }
   input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--accent); }
   select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
@@ -100,12 +50,9 @@
 
   button.add-btn { background: var(--accent); color: #000; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; padding: 12px 20px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s, transform 0.1s; }
   button.add-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-  button.add-btn:active { transform: translateY(0); }
   button.add-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  .detail-toggle { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 12px 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s; letter-spacing: 0.05em; }
+  .detail-toggle { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 12px 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
   .detail-toggle:hover, .detail-toggle.active { border-color: var(--accent); color: var(--accent); }
-
   .extra-fields { display: none; margin-top: 12px; gap: 12px; flex-direction: column; }
   .extra-fields.visible { display: flex; }
   .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -117,10 +64,8 @@
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
 
   .projects { display: flex; flex-direction: column; gap: 12px; }
-
-  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s, transform 0.15s; }
-  .project-card:hover { border-color: #3a3a3a; transform: translateY(-1px); }
-
+  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s; }
+  .project-card:hover { border-color: #3a3a3a; }
   .card-main { display: grid; grid-template-columns: auto 1fr auto auto; gap: 16px; align-items: center; padding: 18px 20px; cursor: pointer; }
 
   .size-badge { font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; white-space: nowrap; }
@@ -130,51 +75,77 @@
 
   .card-title { font-size: 1rem; font-weight: 600; }
   .card-subtitle { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
-
-  .chevron { color: var(--muted); transition: transform 0.25s; font-size: 1.1rem; display: flex; align-items: center; gap: 12px; }
+  .chevron { color: var(--muted); transition: transform 0.25s; font-size: 1.1rem; }
   .project-card.open .chevron { transform: rotate(90deg); }
-
   .card-detail { display: none; border-top: 1px solid var(--border); padding: 20px; background: var(--surface2); }
   .project-card.open .card-detail { display: block; }
+  .status-select { font-size: 0.75rem; padding: 6px 10px; width: auto; }
+  .card-main.status-fullfort .card-title { text-decoration: line-through; color: var(--muted); }
 
+  /* EDIT SECTION */
+  .edit-section { background: var(--surface3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; display: none; }
+  .edit-section.visible { display: block; }
+  .edit-section-title { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .edit-grid .full { grid-column: 1 / -1; }
+  .edit-input { font-size: 0.88rem !important; padding: 9px 12px !important; }
+  .edit-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .btn-save { background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem; padding: 8px 16px; cursor: pointer; }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 8px 14px; cursor: pointer; transition: all 0.15s; }
+  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+
+  /* VIEW MODE fields */
   .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 16px; }
   .detail-item label { display: block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
   .detail-item p { font-size: 0.9rem; }
 
-  .steps-list { list-style: none; counter-reset: step; margin-top: 12px; }
-  .steps-list li { counter-increment: step; display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; align-items: flex-start; }
+  /* STEPS */
+  .steps-section { margin-top: 16px; }
+  .steps-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 8px; }
+  .steps-list { list-style: none; counter-reset: step; }
+  .steps-list li { counter-increment: step; display: grid; grid-template-columns: auto 1fr auto auto auto; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: center; }
   .steps-list li:last-child { border-bottom: none; }
-  .steps-list li::before { content: counter(step, decimal-leading-zero); font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(212,240,0,0.08); border: 1px solid rgba(212,240,0,0.2); border-radius: 4px; padding: 2px 6px; white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
+  .steps-list li::before { content: counter(step, decimal-leading-zero); font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(212,240,0,0.08); border: 1px solid rgba(212,240,0,0.2); border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
+  .step-text { font-size: 0.9rem; }
+  .step-edit-inp { display: none; background: var(--surface2); border: 1px solid var(--accent); border-radius: 6px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.88rem; padding: 5px 9px; outline: none; width: 100%; }
+  .step-edit-inp.on { display: block; }
+  .step-text.off { display: none; }
+  .step-btn { background: transparent; border: none; cursor: pointer; font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; color: var(--muted); transition: all 0.12s; line-height: 1; }
+  .step-btn:hover { background: var(--surface3); }
+  .step-btn.eb:hover { color: var(--accent); }
+  .step-btn.db:hover { color: #ff4444; }
+  .step-btn.sb { display: none; color: var(--accent); }
+  .step-btn.sb.on { display: inline-block; }
 
-  .step-input-row { display: flex; gap: 8px; margin-top: 12px; }
+  .step-input-row { display: flex; gap: 8px; margin-top: 14px; }
   .step-input-row input { flex: 1; }
-
   .btn-small { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; font-family: 'Syne', sans-serif; font-size: 0.8rem; padding: 8px 14px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-small:hover { border-color: var(--accent); color: var(--accent); }
 
-  .btn-delete { background: transparent; border: 1px solid transparent; color: var(--muted); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 6px 10px; cursor: pointer; transition: all 0.15s; margin-top: 16px; }
+  .card-bottom-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .btn-edit-project { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 6px 12px; cursor: pointer; transition: all 0.15s; }
+  .btn-edit-project:hover, .btn-edit-project.active { border-color: var(--accent); color: var(--accent); background: rgba(212,240,0,0.05); }
+  .btn-delete { background: transparent; border: 1px solid transparent; color: var(--muted); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 6px 10px; cursor: pointer; transition: all 0.15s; }
   .btn-delete:hover { border-color: #ff4444; color: #ff4444; }
-
-  .status-select { font-size: 0.75rem; padding: 6px 10px; width: auto; }
-  .card-main.status-fullfort .card-title { text-decoration: line-through; color: var(--muted); }
 
   .empty-state { text-align: center; padding: 64px 24px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; letter-spacing: 0.08em; }
   .empty-state .big { font-size: 3rem; display: block; margin-bottom: 12px; opacity: 0.3; }
 
   @media (max-width: 600px) {
-    .form-row { grid-template-columns: 1fr; }
+    .form-row, .edit-grid { grid-template-columns: 1fr; }
     .extra-row { grid-template-columns: 1fr; }
     header { flex-direction: column; align-items: flex-start; gap: 16px; }
     .stats { gap: 16px; }
+    .steps-list li { grid-template-columns: auto 1fr auto auto auto; }
   }
 </style>
 </head>
 <body>
 
-<!-- KONFIGURASJONSBANNER - vises hvis nøkler mangler -->
 <div id="config-banner">
   <h3>⚙ Supabase-konfigurasjon mangler</h3>
-  <p>For å koble appen til databasen, lim inn URL og API-nøkkel fra Supabase-prosjektet ditt. Du finner disse under <strong>Project Settings → API</strong> i Supabase.</p>
+  <p>Lim inn URL og API-nøkkel fra Supabase-prosjektet ditt. Du finner disse under <strong>Project Settings → API</strong>.</p>
   <input type="text" id="cfg-url" placeholder="Supabase URL (f.eks. https://xyzabc.supabase.co)" />
   <input type="text" id="cfg-key" placeholder="Supabase anon/public API-nøkkel" />
   <button onclick="saveConfig()">Lagre og koble til</button>
@@ -231,322 +202,280 @@
 </div>
 
 <script>
-// ============================================================
-// KONFIGURASJON
-// Disse verdiene fylles inn av deg etter Supabase-oppsett.
-// De lagres i nettleseren slik at du slipper å taste dem inn hver gang.
-// ============================================================
 let SUPABASE_URL = localStorage.getItem('sb_url') || '';
 let SUPABASE_KEY = localStorage.getItem('sb_key') || '';
-
 let projects = [];
 let activeFilter = 'alle';
 let showDetails = false;
-let subscription = null;
+let openCards    = new Set(); // hvilke kort er utvidet
+let editingCards = new Set(); // hvilke kort er i redigeringsmodus
 
-// ============================================================
-// KONFIGURASJON - lagre nøkler fra banneret
-// ============================================================
+// ── CONFIG ────────────────────────────────────────────────────
 function saveConfig() {
   const url = document.getElementById('cfg-url').value.trim();
   const key = document.getElementById('cfg-key').value.trim();
   if (!url || !key) return alert('Fyll inn begge feltene.');
-  localStorage.setItem('sb_url', url);
-  localStorage.setItem('sb_key', key);
-  SUPABASE_URL = url;
-  SUPABASE_KEY = key;
+  localStorage.setItem('sb_url', url); localStorage.setItem('sb_key', key);
+  SUPABASE_URL = url; SUPABASE_KEY = key;
   document.getElementById('config-banner').style.display = 'none';
   init();
 }
 
-// ============================================================
-// SUPABASE API-HJELPEFUNKSJONER
-// Alle kall til databasen går gjennom disse funksjonene.
-// ============================================================
-
-// Henter alle prosjekter, sortert nyeste først
-async function fetchProjects() {
-  const res = await sbFetch('GET', '/rest/v1/prosjekter?order=opprettet.desc');
-  return res;
-}
-
-// Lager et nytt prosjekt i databasen
-async function createProject(data) {
-  return await sbFetch('POST', '/rest/v1/prosjekter', data);
-}
-
-// Oppdaterer ett felt på et prosjekt (f.eks. status)
-async function patchProject(id, data) {
-  return await sbFetch('PATCH', `/rest/v1/prosjekter?id=eq.${id}`, data);
-}
-
-// Sletter et prosjekt
-async function deleteProjectDB(id) {
-  return await sbFetch('DELETE', `/rest/v1/prosjekter?id=eq.${id}`);
-}
-
-// Generell HTTP-funksjon som snakker med Supabase REST API
+// ── SUPABASE ──────────────────────────────────────────────────
 async function sbFetch(method, path, body = null) {
-  const opts = {
-    method,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
-    }
-  };
+  const opts = { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal' } };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(SUPABASE_URL + path, opts);
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Supabase-feil (${res.status}): ${err}`);
-  }
-  const text = await res.text();
-  return text ? JSON.parse(text) : null;
+  if (!res.ok) throw new Error(`Supabase-feil (${res.status}): ${await res.text()}`);
+  const t = await res.text(); return t ? JSON.parse(t) : null;
 }
+const fetchAll  = ()      => sbFetch('GET',    '/rest/v1/prosjekter?order=opprettet.desc');
+const dbCreate  = (d)     => sbFetch('POST',   '/rest/v1/prosjekter', d);
+const dbPatch   = (id, d) => sbFetch('PATCH',  `/rest/v1/prosjekter?id=eq.${id}`, d);
+const dbDelete  = (id)    => sbFetch('DELETE', `/rest/v1/prosjekter?id=eq.${id}`);
 
-// ============================================================
-// SANNTIDSSYNKRONISERING
-// Supabase Realtime lytter på endringer i databasen og oppdaterer
-// appen automatisk for alle brukere uten at de trenger å laste siden på nytt.
-// ============================================================
+// ── REALTIME ──────────────────────────────────────────────────
 function setupRealtime() {
-  // Bruk Supabase JavaScript-klienten for realtime
-  // Vi kobler til via WebSocket direkte
-  const wsUrl = SUPABASE_URL.replace('https://', 'wss://') + '/realtime/v1/websocket?apikey=' + SUPABASE_KEY + '&vsn=1.0.0';
-  
-  try {
-    const ws = new WebSocket(wsUrl);
-    
-    ws.onopen = () => {
-      // Abonner på alle endringer i prosjekter-tabellen
-      ws.send(JSON.stringify({
-        topic: 'realtime:public:prosjekter',
-        event: 'phx_join',
-        payload: {},
-        ref: '1'
-      }));
-      setSyncStatus('live', 'Tilkoblet — synkroniserer i sanntid');
-    };
-
-    ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
-      // Når noe endres i databasen, last alle prosjekter på nytt
-      if (msg.event === 'INSERT' || msg.event === 'UPDATE' || msg.event === 'DELETE') {
-        loadAndRender();
-      }
-    };
-
-    ws.onerror = () => setSyncStatus('error', 'Tilkoblingsfeil — sjekk URL og nøkkel');
-    ws.onclose = () => {
-      setSyncStatus('', 'Frakoblet — prøver igjen om 5 sek…');
-      setTimeout(setupRealtime, 5000);
-    };
-  } catch(e) {
-    setSyncStatus('error', 'Kunne ikke opprette sanntidstilkobling');
-  }
+  const ws = new WebSocket(SUPABASE_URL.replace('https://','wss://') + '/realtime/v1/websocket?apikey=' + SUPABASE_KEY + '&vsn=1.0.0');
+  ws.onopen    = () => { ws.send(JSON.stringify({topic:'realtime:public:prosjekter',event:'phx_join',payload:{},ref:'1'})); setSyncStatus('live','Tilkoblet — synkroniserer i sanntid'); };
+  ws.onmessage = (e) => { const m=JSON.parse(e.data); if(['INSERT','UPDATE','DELETE'].includes(m.event)) loadAndRender(); };
+  ws.onerror   = () => setSyncStatus('error','Tilkoblingsfeil');
+  ws.onclose   = () => { setSyncStatus('','Frakoblet — prøver igjen…'); setTimeout(setupRealtime, 5000); };
+}
+function setSyncStatus(t, txt) {
+  document.getElementById('sync-dot').className = 'sync-dot' + (t ? ' '+t : '');
+  document.getElementById('sync-text').textContent = txt;
 }
 
-function setSyncStatus(type, text) {
-  const dot = document.getElementById('sync-dot');
-  const txt = document.getElementById('sync-text');
-  dot.className = 'sync-dot' + (type ? ' ' + type : '');
-  txt.textContent = text;
-}
-
-// ============================================================
-// APPLOGIKK
-// ============================================================
+// ── INIT ──────────────────────────────────────────────────────
 async function init() {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     document.getElementById('config-banner').style.display = 'block';
-    setSyncStatus('error', 'Ikke konfigurert');
-    render(); // vis tom liste
-    return;
+    setSyncStatus('error','Ikke konfigurert'); render(); return;
   }
-  try {
-    await loadAndRender();
-    setupRealtime();
-  } catch(e) {
-    setSyncStatus('error', 'Kunne ikke koble til databasen');
-    document.getElementById('project-list').innerHTML = `<div class="empty-state"><span class="big">⚠</span>Tilkoblingsfeil.<br><small style="font-size:.75rem">${e.message}</small></div>`;
-  }
+  try { await loadAndRender(); setupRealtime(); }
+  catch(e) { setSyncStatus('error','Tilkoblingsfeil'); document.getElementById('project-list').innerHTML = `<div class="empty-state"><span class="big">⚠</span>${e.message}</div>`; }
 }
 
 async function loadAndRender() {
-  projects = await fetchProjects() || [];
+  projects = await fetchAll() || [];
   render();
 }
 
+// ── LEGG TIL PROSJEKT ─────────────────────────────────────────
 function toggleDetailFields() {
   showDetails = !showDetails;
   document.getElementById('extra-fields').classList.toggle('visible', showDetails);
-  const btn = document.getElementById('toggle-detail-btn');
-  btn.classList.toggle('active', showDetails);
-  btn.textContent = showDetails ? '– Detaljer' : '+ Detaljer';
-}
-
-function setFilter(f, btn) {
-  activeFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
+  const b = document.getElementById('toggle-detail-btn');
+  b.classList.toggle('active', showDetails);
+  b.textContent = showDetails ? '– Detaljer' : '+ Detaljer';
 }
 
 async function addProject() {
   const navn = document.getElementById('inp-navn').value.trim();
   if (!navn) { document.getElementById('inp-navn').focus(); return; }
-
-  const addBtn = document.getElementById('add-btn');
-  addBtn.disabled = true;
-  addBtn.textContent = '…';
-
-  const steg = [];
-  const s1 = document.getElementById('inp-steg1').value.trim();
-  if (s1) steg.push(s1);
-
-  const data = {
-    navn,
-    storrelse: document.getElementById('inp-storrelse').value,
-    status: 'ikke-startet',
-    ansvarlig: document.getElementById('inp-ansvarlig').value.trim() || null,
-    frist: document.getElementById('inp-frist').value.trim() || null,
-    beskrivelse: document.getElementById('inp-beskrivelse').value.trim() || null,
-    steg,
-    opprettet: new Date().toISOString()
-  };
-
+  const b = document.getElementById('add-btn');
+  b.disabled = true; b.textContent = '…';
+  const steg = []; const s1 = document.getElementById('inp-steg1').value.trim(); if (s1) steg.push(s1);
   try {
-    await createProject(data);
-    ['inp-navn','inp-ansvarlig','inp-frist','inp-beskrivelse','inp-steg1'].forEach(id => document.getElementById(id).value = '');
+    await dbCreate({ navn, storrelse: document.getElementById('inp-storrelse').value, status: 'ikke-startet',
+      ansvarlig: document.getElementById('inp-ansvarlig').value.trim()||null,
+      frist: document.getElementById('inp-frist').value.trim()||null,
+      beskrivelse: document.getElementById('inp-beskrivelse').value.trim()||null,
+      steg, opprettet: new Date().toISOString() });
+    ['inp-navn','inp-ansvarlig','inp-frist','inp-beskrivelse','inp-steg1'].forEach(id => document.getElementById(id).value='');
     if (showDetails) toggleDetailFields();
-    // Realtime vil oppdatere listen automatisk, men vi kan også laste manuelt
     await loadAndRender();
-  } catch(e) {
-    alert('Kunne ikke lagre prosjekt: ' + e.message);
-  }
-
-  addBtn.disabled = false;
-  addBtn.textContent = 'Legg til';
+  } catch(e) { alert('Kunne ikke lagre: ' + e.message); }
+  b.disabled = false; b.textContent = 'Legg til';
 }
 
-async function deleteProject(id) {
-  if (!confirm('Slett dette prosjektet?')) return;
-  try {
-    await deleteProjectDB(id);
-    await loadAndRender();
-  } catch(e) {
-    alert('Kunne ikke slette: ' + e.message);
-  }
+// ── STATUS ────────────────────────────────────────────────────
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); render();
 }
 
 async function updateStatus(id, val) {
-  try {
-    await patchProject(id, { status: val });
-    await loadAndRender();
-  } catch(e) {
-    alert('Kunne ikke oppdatere status: ' + e.message);
-  }
+  try { await dbPatch(id, {status: val}); await loadAndRender(); }
+  catch(e) { alert('Feil: ' + e.message); }
 }
 
-async function addStep(id) {
-  const inp = document.getElementById('step-inp-' + id);
-  const val = inp.value.trim();
-  if (!val) return;
+// ── SLETT PROSJEKT ────────────────────────────────────────────
+async function deleteProject(id) {
+  if (!confirm('Slett dette prosjektet?')) return;
+  try { await dbDelete(id); openCards.delete(id); editingCards.delete(id); await loadAndRender(); }
+  catch(e) { alert('Feil: ' + e.message); }
+}
+
+// ── REDIGER PROSJEKTFELTER ────────────────────────────────────
+function toggleEditMode(id) {
+  if (editingCards.has(id)) { editingCards.delete(id); }
+  else { editingCards.add(id); openCards.add(id); }
+  render();
+  if (editingCards.has(id)) setTimeout(() => { const el = document.getElementById(`en-${id}`); if(el) el.focus(); }, 40);
+}
+
+async function saveProjectEdit(id) {
   const p = projects.find(p => p.id === id);
   if (!p) return;
-  const nyeSteg = [...(p.steg || []), val];
-  try {
-    await patchProject(id, { steg: nyeSteg });
-    inp.value = '';
-    await loadAndRender();
-    // Åpne kortet igjen etter oppdatering
-    setTimeout(() => {
-      const el = document.getElementById('card-' + id);
-      if (el) el.classList.add('open');
-    }, 50);
-  } catch(e) {
-    alert('Kunne ikke legge til steg: ' + e.message);
-  }
+  const patch = {
+    navn:        document.getElementById(`en-${id}`).value.trim() || p.navn,
+    storrelse:   document.getElementById(`es-${id}`).value,
+    ansvarlig:   document.getElementById(`ea-${id}`).value.trim() || null,
+    frist:       document.getElementById(`ef-${id}`).value.trim() || null,
+    beskrivelse: document.getElementById(`eb-${id}`).value.trim() || null,
+  };
+  try { await dbPatch(id, patch); editingCards.delete(id); await loadAndRender(); }
+  catch(e) { alert('Kunne ikke lagre: ' + e.message); }
 }
 
-// ============================================================
-// RENDERING
-// ============================================================
-function buildCard(p, open = false) {
+// ── STEG ──────────────────────────────────────────────────────
+async function addStep(id) {
+  const inp = document.getElementById('si-'+id);
+  const val = inp.value.trim(); if (!val) return;
+  const p = projects.find(p => p.id === id); if (!p) return;
+  try { await dbPatch(id, {steg: [...(p.steg||[]), val]}); inp.value=''; openCards.add(id); await loadAndRender(); }
+  catch(e) { alert('Feil: ' + e.message); }
+}
+
+async function deleteStep(id, i) {
+  const p = projects.find(p => p.id === id); if (!p) return;
+  try { await dbPatch(id, {steg: p.steg.filter((_,j) => j !== i)}); openCards.add(id); await loadAndRender(); }
+  catch(e) { alert('Feil: ' + e.message); }
+}
+
+function toggleStepEdit(id, i) {
+  const t = document.getElementById(`st-${id}-${i}`);
+  const inp = document.getElementById(`se-${id}-${i}`);
+  const sb = document.getElementById(`ss-${id}-${i}`);
+  const on = inp.classList.contains('on');
+  if (on) { t.classList.remove('off'); inp.classList.remove('on'); sb.classList.remove('on'); }
+  else    { inp.value = t.textContent; t.classList.add('off'); inp.classList.add('on'); sb.classList.add('on'); inp.focus(); }
+}
+
+async function saveStepEdit(id, i) {
+  const inp = document.getElementById(`se-${id}-${i}`);
+  const val = inp.value.trim(); if (!val) return;
+  const p = projects.find(p => p.id === id); if (!p) return;
+  const s = [...p.steg]; s[i] = val;
+  try { await dbPatch(id, {steg: s}); openCards.add(id); await loadAndRender(); }
+  catch(e) { alert('Feil: ' + e.message); }
+}
+
+// ── TOGGLE KORT ───────────────────────────────────────────────
+function toggleCard(id) {
+  if (openCards.has(id)) { openCards.delete(id); editingCards.delete(id); }
+  else openCards.add(id);
+  render();
+}
+
+// ── BYGG KORT ─────────────────────────────────────────────────
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function buildCard(p) {
+  const open = openCards.has(p.id);
+  const editing = editingCards.has(p.id);
+  const dot = p.status==='pagaar' ? 'var(--accent)' : p.status==='fullfort' ? '#4caf50' : 'var(--muted)';
+
+  // Steg med inline rediger/slett
   const stegHTML = p.steg && p.steg.length ? `
-    <div style="margin-top:16px">
-      <label style="font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">Steg / instruksjoner</label>
-      <ul class="steps-list">${p.steg.map(s => `<li>${s}</li>`).join('')}</ul>
+    <div class="steps-section">
+      <span class="steps-label">Steg / instruksjoner</span>
+      <ul class="steps-list">
+        ${p.steg.map((s,i) => `<li>
+          <span class="step-text" id="st-${p.id}-${i}">${esc(s)}</span>
+          <input class="step-edit-inp" id="se-${p.id}-${i}"
+            onkeydown="if(event.key==='Enter')saveStepEdit(${p.id},${i});if(event.key==='Escape')toggleStepEdit(${p.id},${i})" />
+          <button class="step-btn sb" id="ss-${p.id}-${i}" title="Lagre" onclick="saveStepEdit(${p.id},${i})">✓</button>
+          <button class="step-btn eb" title="Rediger" onclick="toggleStepEdit(${p.id},${i})">✎</button>
+          <button class="step-btn db" title="Slett" onclick="deleteStep(${p.id},${i})">✕</button>
+        </li>`).join('')}
+      </ul>
     </div>` : '';
 
-  const detailGrid = (p.ansvarlig || p.frist || p.beskrivelse || p.opprettet) ? `
+  // Redigeringsskjema for prosjektfelter
+  const editForm = `
+    <div class="edit-section ${editing?'visible':''}">
+      <div class="edit-section-title">✎ Rediger prosjektinfo</div>
+      <div class="edit-grid">
+        <div class="full"><input class="edit-input" type="text" id="en-${p.id}" value="${esc(p.navn)}" placeholder="Prosjektnavn" /></div>
+        <select class="edit-input" id="es-${p.id}">
+          <option value="liten"  ${p.storrelse==='liten' ?'selected':''}>Liten</option>
+          <option value="medium" ${p.storrelse==='medium'?'selected':''}>Medium</option>
+          <option value="stor"   ${p.storrelse==='stor'  ?'selected':''}>Stor</option>
+        </select>
+        <input class="edit-input" type="text" id="ea-${p.id}" value="${esc(p.ansvarlig)}" placeholder="Ansvarlig…" />
+        <input class="edit-input" type="text" id="ef-${p.id}" value="${esc(p.frist)}" placeholder="Frist…" />
+        <div class="full"><textarea class="edit-input" id="eb-${p.id}" style="min-height:65px" placeholder="Beskrivelse…">${esc(p.beskrivelse)}</textarea></div>
+      </div>
+      <div class="edit-actions">
+        <button class="btn-save" onclick="saveProjectEdit(${p.id})">Lagre endringer</button>
+        <button class="btn-cancel" onclick="toggleEditMode(${p.id})">Avbryt</button>
+      </div>
+    </div>`;
+
+  // Visningsfelter (skjules i redigeringsmodus)
+  const detailGrid = !editing && (p.ansvarlig||p.frist||p.beskrivelse||p.opprettet) ? `
     <div class="detail-grid">
-      ${p.ansvarlig ? `<div class="detail-item"><label>Ansvarlig</label><p>${p.ansvarlig}</p></div>` : ''}
-      ${p.frist ? `<div class="detail-item"><label>Frist</label><p>${p.frist}</p></div>` : ''}
-      ${p.opprettet ? `<div class="detail-item"><label>Opprettet</label><p>${new Date(p.opprettet).toLocaleDateString('no-NO')}</p></div>` : ''}
-      ${p.beskrivelse ? `<div class="detail-item" style="grid-column:1/-1"><label>Beskrivelse</label><p>${p.beskrivelse}</p></div>` : ''}
+      ${p.ansvarlig?`<div class="detail-item"><label>Ansvarlig</label><p>${esc(p.ansvarlig)}</p></div>`:''}
+      ${p.frist    ?`<div class="detail-item"><label>Frist</label><p>${esc(p.frist)}</p></div>`:''}
+      ${p.opprettet?`<div class="detail-item"><label>Opprettet</label><p>${new Date(p.opprettet).toLocaleDateString('no-NO')}</p></div>`:''}
+      ${p.beskrivelse?`<div class="detail-item" style="grid-column:1/-1"><label>Beskrivelse</label><p>${esc(p.beskrivelse)}</p></div>`:''}
     </div>` : '';
-
-  const dotColor = p.status === 'pagaar' ? 'var(--accent)' : p.status === 'fullfort' ? '#4caf50' : 'var(--muted)';
-  const statusLabel = { 'ikke-startet': 'Ikke startet', 'pagaar': 'Pågår', 'fullfort': 'Fullført' };
 
   return `
-    <div class="project-card ${open ? 'open' : ''}" id="card-${p.id}">
+    <div class="project-card ${open?'open':''}" id="card-${p.id}">
       <div class="card-main status-${p.status}" onclick="toggleCard(${p.id})">
         <span class="size-badge size-${p.storrelse}">${p.storrelse}</span>
         <div>
           <div class="card-title">
-            <span style="width:7px;height:7px;border-radius:50%;background:${dotColor};display:inline-block;margin-right:8px;"></span>
-            ${p.navn}
+            <span style="width:7px;height:7px;border-radius:50%;background:${dot};display:inline-block;margin-right:8px;flex-shrink:0"></span>
+            ${esc(p.navn)}
           </div>
-          ${(p.steg && p.steg.length) || p.frist ? `<div class="card-subtitle">${p.steg && p.steg.length ? p.steg.length + ' steg' : ''}${p.frist ? ((p.steg && p.steg.length ? ' · ' : '') + p.frist) : ''}</div>` : ''}
+          ${(p.steg&&p.steg.length)||p.frist?`<div class="card-subtitle">${p.steg&&p.steg.length?p.steg.length+' steg':''}${p.frist?((p.steg&&p.steg.length?' · ':'')+esc(p.frist)):''}</div>`:''}
         </div>
-        <select class="status-select" onclick="event.stopPropagation()" onchange="updateStatus(${p.id}, this.value)">
+        <select class="status-select" onclick="event.stopPropagation()" onchange="updateStatus(${p.id},this.value)">
           <option value="ikke-startet" ${p.status==='ikke-startet'?'selected':''}>Ikke startet</option>
-          <option value="pagaar" ${p.status==='pagaar'?'selected':''}>Pågår</option>
-          <option value="fullfort" ${p.status==='fullfort'?'selected':''}>Fullført</option>
+          <option value="pagaar"       ${p.status==='pagaar'      ?'selected':''}>Pågår</option>
+          <option value="fullfort"     ${p.status==='fullfort'    ?'selected':''}>Fullført</option>
         </select>
         <span class="chevron">›</span>
       </div>
       <div class="card-detail">
+        ${editForm}
         ${detailGrid}
         ${stegHTML}
         <div class="step-input-row">
-          <input type="text" id="step-inp-${p.id}" placeholder="Legg til steg…" onkeydown="if(event.key==='Enter')addStep(${p.id})" />
+          <input type="text" id="si-${p.id}" placeholder="Legg til nytt steg…" onkeydown="if(event.key==='Enter')addStep(${p.id})" />
           <button class="btn-small" onclick="addStep(${p.id})">+ Steg</button>
         </div>
-        <button class="btn-delete" onclick="deleteProject(${p.id})">🗑 Slett prosjekt</button>
+        <div class="card-bottom-actions">
+          <button class="btn-edit-project ${editing?'active':''}" onclick="toggleEditMode(${p.id})">
+            ${editing ? '✕ Avbryt redigering' : '✎ Rediger prosjekt'}
+          </button>
+          <button class="btn-delete" onclick="deleteProject(${p.id})">🗑 Slett</button>
+        </div>
       </div>
     </div>`;
 }
 
-function toggleCard(id) {
-  const el = document.getElementById('card-' + id);
-  if (el) el.classList.toggle('open');
-}
-
 function render() {
   const list = document.getElementById('project-list');
-  let filtered = projects.filter(p => {
-    if (activeFilter === 'alle') return true;
-    if (['liten','medium','stor'].includes(activeFilter)) return p.storrelse === activeFilter;
-    return p.status === activeFilter;
+  const filtered = projects.filter(p => {
+    if (activeFilter==='alle') return true;
+    if (['liten','medium','stor'].includes(activeFilter)) return p.storrelse===activeFilter;
+    return p.status===activeFilter;
   });
-
-  if (!filtered.length) {
-    list.innerHTML = `<div class="empty-state"><span class="big">◌</span>${projects.length === 0 ? 'Ingen prosjekter ennå.<br>Legg til ditt første prosjekt over.' : 'Ingen prosjekter i denne kategorien.'}</div>`;
-  } else {
-    list.innerHTML = filtered.map(p => buildCard(p)).join('');
-  }
-
-  document.getElementById('stat-total').textContent = projects.length;
-  document.getElementById('stat-pagaar').textContent = projects.filter(p=>p.status==='pagaar').length;
+  list.innerHTML = filtered.length
+    ? filtered.map(p => buildCard(p)).join('')
+    : `<div class="empty-state"><span class="big">◌</span>${projects.length===0?'Ingen prosjekter ennå.<br>Legg til ditt første prosjekt over.':'Ingen prosjekter i denne kategorien.'}</div>`;
+  document.getElementById('stat-total').textContent    = projects.length;
+  document.getElementById('stat-pagaar').textContent   = projects.filter(p=>p.status==='pagaar').length;
   document.getElementById('stat-fullfort').textContent = projects.filter(p=>p.status==='fullfort').length;
 }
 
-// Start appen
 init();
 </script>
 </body>
