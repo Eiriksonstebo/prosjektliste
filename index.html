@@ -758,9 +758,11 @@ function buildCard(p) {
         const aktTags    = typeof a === 'string' ? [] : (a.tags || []);
         const aktKomm    = typeof a === 'string' ? [] : (a.kommentarer || []);
      return `<li>
-          <button class="akt-collapse-btn" id="akt-collapse-btn-${p.id}-${i}" onclick="toggleAktCollapse(${p.id},${i})">−</button>
           <div class="akt-body" id="akt-body-${p.id}-${i}">
-            <div class="akt-tekst" id="st-${p.id}-${i}">${esc(tekst)}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="akt-tekst" id="st-${p.id}-${i}">${esc(tekst)}</div>
+              <button class="akt-collapse-btn" id="akt-collapse-btn-${p.id}-${i}" onclick="toggleAktCollapse(${p.id},${i})">−</button>
+            </div>
             <input class="akt-edit-inp" id="se-${p.id}-${i}"
               onkeydown="if(event.key==='Enter')saveStepEdit(${p.id},${i});if(event.key==='Escape')toggleStepEdit(${p.id},${i})" />
             ${aktTags.length ? `<div class="akt-tags" id="at-${p.id}-${i}">
