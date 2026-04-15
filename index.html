@@ -150,6 +150,11 @@
   .akt-edit-inp { display: none; background: var(--surface2); border: 1px solid var(--accent); border-radius: 6px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.88rem; padding: 5px 9px; outline: none; width: 100%; margin-bottom: 4px; }
   .akt-edit-inp.on { display: block; }
   .akt-tekst.off { display: none; }
+  .akt-collapsed .akt-tag-btns { display: none; }
+  .akt-collapsed .akt-komm-section { display: none; }
+  .akt-collapsed .akt-tags { display: none; }
+  .akt-collapse-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; font-size: 0.7rem; padding: 1px 6px; cursor: pointer; transition: all 0.15s; line-height: 1.4; flex-shrink: 0; margin-top: 1px; }
+  .akt-collapse-btn:hover { border-color: var(--accent); color: var(--accent); }
   .akt-tags.off { display: none; }
   .step-btn { background: transparent; border: none; cursor: pointer; font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; color: var(--muted); transition: all 0.12s; line-height: 1; margin-top: 1px; }
   .step-btn:hover { background: var(--surface3); }
@@ -693,7 +698,13 @@ async function saveStepEdit(id, i) {
   try { await dbPatch(id,{steg: aktiviteter}); openCards.add(id); await loadAndRender(); }
   catch(e){ alert('Feil: '+e.message); }
 }
-
+function toggleAktCollapse(prosjektId, aktIdx) {
+  const body = document.getElementById(`akt-body-${prosjektId}-${aktIdx}`);
+  const btn  = document.getElementById(`akt-collapse-btn-${prosjektId}-${aktIdx}`);
+  if (!body) return;
+  const collapsed = body.classList.toggle('akt-collapsed');
+  btn.textContent = collapsed ? '+' : '−';
+}
 function toggleCard(id) {
   if(openCards.has(id)){openCards.delete(id);editingCards.delete(id);}else openCards.add(id);
   render();
@@ -746,8 +757,9 @@ function buildCard(p) {
         const tekst      = typeof a === 'string' ? a : (a.tekst || '');
         const aktTags    = typeof a === 'string' ? [] : (a.tags || []);
         const aktKomm    = typeof a === 'string' ? [] : (a.kommentarer || []);
-        return `<li>
-          <div class="akt-body">
+     return `<li>
+          <button class="akt-collapse-btn" id="akt-collapse-btn-${p.id}-${i}" onclick="toggleAktCollapse(${p.id},${i})">−</button>
+          <div class="akt-body" id="akt-body-${p.id}-${i}">
             <div class="akt-tekst" id="st-${p.id}-${i}">${esc(tekst)}</div>
             <input class="akt-edit-inp" id="se-${p.id}-${i}"
               onkeydown="if(event.key==='Enter')saveStepEdit(${p.id},${i});if(event.key==='Escape')toggleStepEdit(${p.id},${i})" />
