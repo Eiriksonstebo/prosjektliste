@@ -705,9 +705,23 @@ function toggleAktCollapse(prosjektId, aktIdx) {
   const collapsed = body.classList.toggle('akt-collapsed');
   btn.textContent = collapsed ? '+' : '−';
 }
+
+function collapseAlleAktiviteter(prosjektId, antall) {
+  for (let i = 0; i < antall; i++) {
+    const body = document.getElementById(`akt-body-${prosjektId}-${i}`);
+    const btn  = document.getElementById(`akt-collapse-btn-${prosjektId}-${i}`);
+    if (body) { body.classList.add('akt-collapsed'); }
+    if (btn)  { btn.textContent = '+'; }
+  }
+}
 function toggleCard(id) {
   if(openCards.has(id)){openCards.delete(id);editingCards.delete(id);}else openCards.add(id);
   render();
+  // Collapse alle aktiviteter når et kort åpnes
+  if (openCards.has(id)) {
+    const p = projects.find(p => p.id === id);
+    if (p) setTimeout(() => collapseAlleAktiviteter(id, (p.steg||[]).length), 10);
+  }
 }
 
 // ════════════════════════════════════════════════════════════
